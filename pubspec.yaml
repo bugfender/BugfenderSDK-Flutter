@@ -1,0 +1,14 @@
+name: flutter_bugfender
+description: A new flutter plugin project.
+version: 0.0.1
+author:
+homepage:
+
+flutter:
+  plugin:
+    androidPackage: com.ninja.flutterbugfender
+    pluginClass: FlutterBugfenderPlugin
+
+dependencies:
+  flutter:
+    sdk: flutter

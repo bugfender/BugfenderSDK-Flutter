@@ -1,0 +1,25 @@
+PODS:
+  - BugfenderSDK/ObjC (1.5.2)
+  - Flutter (1.0.0)
+  - flutter_bugfender (0.0.1):
+    - Flutter
+
+DEPENDENCIES:
+  - BugfenderSDK/ObjC (~> 1.5.2)
+  - Flutter (from `/Users/polbatllo/MJ/flutter/bin/cache/artifacts/engine/ios`)
+  - flutter_bugfender (from `/Users/polbatllo/MJ/flutter_bugfender/ios`)
+
+EXTERNAL SOURCES:
+  Flutter:
+    :path: /Users/polbatllo/MJ/flutter/bin/cache/artifacts/engine/ios
+  flutter_bugfender:
+    :path: /Users/polbatllo/MJ/flutter_bugfender/ios
+
+SPEC CHECKSUMS:
+  BugfenderSDK: dce8c4e14480bece6c14cc7d9e2a0327ba944f4b
+  Flutter: 9d0fac939486c9aba2809b7982dfdbb47a7b0296
+  flutter_bugfender: 49a7bbc762c668335c77957e371dd13446b59679
+
+PODFILE CHECKSUM: 7e4f0ab22065d43de568414173740b4a9a97a3ae
+
+COCOAPODS: 1.4.0
