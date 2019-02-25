@@ -1,6 +1,6 @@
 name: flutter_bugfender
-description: A new flutter plugin project.
-version: 0.0.1
+description: Flutter plugin to enable Bugfender reporting.
+version: 0.0.5
 author:
 homepage:
 
@@ -12,3 +12,6 @@ flutter:
 dependencies:
   flutter:
     sdk: flutter
+
+environment:
+  sdk: ">=2.0.0-dev.58.0 <3.0.0"
