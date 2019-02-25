@@ -6,7 +6,6 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - Flutter (from `/Users/peter/Developer/flutter-sdk/bin/cache/artifacts/engine/ios`)
   - Flutter (from `/Users/polbatllo/MJ/flutter/bin/cache/artifacts/engine/ios`)
   - flutter_bugfender (from `/Users/polbatllo/MJ/flutter_bugfender/ios`)
 
