@@ -1,6 +1,7 @@
-## [0.0.1] - TODO: Add release date.
+## [1.0.0] - Swift support - breaking change
 
-* TODO: Describe initial release.
+* replaced iOS SDK with Swift supported pod
+* replaced example with iOS Swift project
 
 ## [0.0.5] - minor fixes
 

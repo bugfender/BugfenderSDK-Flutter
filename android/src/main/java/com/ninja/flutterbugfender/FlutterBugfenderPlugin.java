@@ -11,7 +11,6 @@ import io.flutter.plugin.common.PluginRegistry.Registrar;
 import com.bugfender.sdk.Bugfender;
 
 import android.app.Activity;
-import android.support.v7.appcompat.BuildConfig;
 
 /**
  * FlutterBugfenderPlugin
