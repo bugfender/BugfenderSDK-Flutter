@@ -15,8 +15,7 @@ apply plugin: 'com.android.application'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.3'
+    compileSdkVersion 28
 
     lintOptions {
         disable 'InvalidPackage'
@@ -24,11 +23,11 @@ android {
 
     defaultConfig {
         applicationId "com.ninja.flutterbugfenderexample"
-        minSdkVersion 16
-        targetSdkVersion 26
+        minSdkVersion 21
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -44,9 +43,10 @@ flutter {
 }
 
 dependencies {
-    androidTestImplementation 'com.android.support:support-annotations:27.0.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test:rules:1.0.1'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha04'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
+
     implementation 'com.bugfender.sdk:android:1.+'
 }
