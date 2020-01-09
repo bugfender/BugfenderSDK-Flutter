@@ -1,3 +1,10 @@
+## [1.1.0] - Tags support and basic extended logging
+
+* Added tag parameter to default `log()` method
+* Added `l()` method with extended parameters like `tag`, `methodName` and `className`
+* Added `forceSendOnce()` method to synchronize all logs and issues with the server once, regardless if this device is enabled or not
+* Updated README.md with instruction on how to get current method and class name
+
 ## [1.0.0] - Swift support - breaking change
 
 * replaced iOS SDK with Swift supported pod
