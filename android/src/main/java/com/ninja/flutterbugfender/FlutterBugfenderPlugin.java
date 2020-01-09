@@ -61,15 +61,15 @@ public class FlutterBugfenderPlugin implements MethodCallHandler {
                 break;
             case "log":
                 String log = call.argument("log");
-                String tag = call.argument("tag")
+                String tag = call.argument("tag");
                 Bugfender.d(tag, log);
                 result.success(null);
                 break;
             case "logExtended":
                 String log = call.argument("log");
-                String tag = call.argument("tag")
-                String methodName = call.argument("methodName")
-                String className = call.argument("className")
+                String tag = call.argument("tag");
+                String methodName = call.argument("methodName");
+                String className = call.argument("className");
                 Bugfender.log(0, methodName, className, "Info", tag, log);
                 result.success(null);
                 break;
