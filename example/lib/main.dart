@@ -23,6 +23,8 @@ class _MyAppState extends State<MyApp> {
     try {
       await FlutterBugfender.init("534EKHhDlA0cJuVyPKQNCtIVqMepG6P1");
       await FlutterBugfender.log("Working fine!");
+      await FlutterBugfender.log("Working fine!", tag: "SpecialTag");
+      await FlutterBugfender.l("Working fin!e", tag: "Info", methodName: "method name", className: "class name");
       await FlutterBugfender.warn("Warning sent!");
       await FlutterBugfender.error("Error sent!");
       await FlutterBugfender.setDeviceString("user.email", "example@example.com");
@@ -30,6 +32,7 @@ class _MyAppState extends State<MyApp> {
       await FlutterBugfender.setDeviceString("user.team", "EasyFlatBCN");
       await FlutterBugfender.removeDeviceString("user.team");
       await FlutterBugfender.sendIssue("Test Issue", "Issue value goes here!");
+      await FlutterBugfender.forceSendOnce();
     } catch (e) {
       print("Error found!!!! $e");
       throw e;
