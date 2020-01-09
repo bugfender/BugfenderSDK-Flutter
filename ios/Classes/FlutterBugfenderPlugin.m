@@ -34,13 +34,27 @@
         [Bugfender sendIssueWithTitle:title text:value];
         result(nil);
     } else if ([@"log" isEqualToString:call.method]) {
-        BFLog (@"%@", call.arguments);
+        NSDictionary *arguments = call.arguments;
+        NSString *log = arguments[@"log"];
+        NSString *tag = arguments[@"tag"];
+        BFLog2(BFLogLevelDefault, tag, log);
+        result(nil);
+    } else if ([@"logExtended" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        NSString *log = arguments[@"log"];
+        NSString *tag = arguments[@"tag"];
+        NSString *methodName = arguments[@"methodName"];
+        NSString *className = arguments[@"className"];
+        [Bugfender logWithLineNumber:0 method:methodName file:className level:BFLogLevelDefault tag:tag message:log];
         result(nil);
     } else if ([@"warn" isEqualToString:call.method]) {
         BFLogWarn(@"%@", call.arguments);
         result(nil);
     } else if ([@"error" isEqualToString:call.method]) {
         BFLogErr(@"%@", call.arguments);
+        result(nil);
+    } else if ([@"forceSendOnce" isEqualToString:call.method]) {
+        [Bugfender forceSendOnce];
         result(nil);
     } else {
         result(FlutterMethodNotImplemented);
