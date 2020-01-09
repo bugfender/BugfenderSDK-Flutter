@@ -9,6 +9,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
 import com.bugfender.sdk.Bugfender;
+import com.bugfender.sdk.LogLevel;
 
 import android.app.Activity;
 
@@ -60,9 +61,9 @@ public class FlutterBugfenderPlugin implements MethodCallHandler {
                 result.success(null);
                 break;
             case "log":
-                String log = call.argument("log");
-                String tag = call.argument("tag");
-                Bugfender.d(tag, log);
+                String info = call.argument("log");
+                String tagInfo = call.argument("tag");
+                Bugfender.d(tagInfo, info);
                 result.success(null);
                 break;
             case "logExtended":
@@ -70,7 +71,7 @@ public class FlutterBugfenderPlugin implements MethodCallHandler {
                 String tag = call.argument("tag");
                 String methodName = call.argument("methodName");
                 String className = call.argument("className");
-                Bugfender.log(0, methodName, className, "Info", tag, log);
+                Bugfender.log(0, methodName, className, LogLevel.Info, tag, log);
                 result.success(null);
                 break;
             case "warn":
