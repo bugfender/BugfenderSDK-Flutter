@@ -71,17 +71,21 @@ public class FlutterBugfenderPlugin implements MethodCallHandler {
                 String tag = call.argument("tag");
                 String methodName = call.argument("methodName");
                 String className = call.argument("className");
-                Bugfender.log(0, methodName, className, LogLevel.Info, tag, log);
+                String level = call.argument("logLevel");
+                LogLevel logLevel = LogLevel.valueOf(level);
+                Bugfender.log(0, methodName, className, logLevel, tag, log);
                 result.success(null);
                 break;
             case "warn":
-                String warn = call.arguments();
-                Bugfender.w("Warning", warn);
+                String warn = call.argument("log");
+                String tagWarn = call.argument("tag");
+                Bugfender.w(tagWarn, warn);
                 result.success(null);
                 break;
             case "error":
-                String err = call.arguments();
-                Bugfender.e("Error", err);
+                String err = call.argument("log");
+                String tagErr = call.argument("tag");
+                Bugfender.e(tagErr, err);
                 result.success(null);
                 break;
             case "forceSendOnce":
