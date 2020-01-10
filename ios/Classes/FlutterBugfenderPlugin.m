@@ -45,13 +45,28 @@
         NSString *tag = arguments[@"tag"];
         NSString *methodName = arguments[@"methodName"];
         NSString *className = arguments[@"className"];
-        [Bugfender logWithLineNumber:0 method:methodName file:className level:BFLogLevelDefault tag:tag message:log];
+        NSString *logLevel = arguments[@"logLevel"];
+        BFLogLevel *level;
+        if ([logLevel containsString:@"Warning"]){
+            level = BFLogLevelWarning;
+        }else if ([logLevel containsString:@"Error"]){
+            level = BFLogLevelError;
+        }else{
+            level = BFLogLevelDefault;
+        }
+        [Bugfender logWithLineNumber:0 method:methodName file:className level:level tag:tag message:log];
         result(nil);
     } else if ([@"warn" isEqualToString:call.method]) {
-        BFLogWarn(@"%@", call.arguments);
+        NSDictionary *arguments = call.arguments;
+        NSString *log = arguments[@"log"];
+        NSString *tag = arguments[@"tag"];
+        BFLog2(BFLogLevelWarning, tag, log);
         result(nil);
     } else if ([@"error" isEqualToString:call.method]) {
-        BFLogErr(@"%@", call.arguments);
+        NSDictionary *arguments = call.arguments;
+        NSString *log = arguments[@"log"];
+        NSString *tag = arguments[@"tag"];
+        BFLog2(BFLogLevelError, tag, log);
         result(nil);
     } else if ([@"forceSendOnce" isEqualToString:call.method]) {
         [Bugfender forceSendOnce];
