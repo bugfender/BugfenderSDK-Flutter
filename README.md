@@ -31,13 +31,13 @@ You can also call:
 
  * FlutterBugfender.log("Working fine!");
  * FlutterBugfender.log("Working fine!", tag: "Tag");
- * FlutterBugfender.warn("Warning sent!");
- * FlutterBugfender.error("Error sent!");
+ * FlutterBugfender.warn("Warning sent!", tag: "Tag");
+ * FlutterBugfender.error("Error sent!", tag: "Tag");
  * FlutterBugfender.setDeviceString("user.email", "example@example.com");
  * FlutterBugfender.removeDeviceString("user.email");
  * FlutterBugfender.sendIssue("Test Issue", "Issue description goes here!");
  * FlutterBugfender.forceSendOnce();
- * FlutterBugfender.l("Working fine!", tag: 'Info', methodName: "some method", className: "some class")
+ * FlutterBugfender.l("Working fine!", logLevel: LogLevel.Info, tag: 'Some Class', methodName: "some method", className: "Some Class")
 
  ## Getting real method and class name
 
@@ -50,5 +50,5 @@ import 'package:stack_trace/stack_trace.dart';
 
 final className = Trace.current().frames[1].member.split(".")[0];
 final methodName = Trace.current().frames[1].member.split(".")[1];
-FlutterBugfender.l(message, tag: 'Info', methodName: methodName, className: className);
+FlutterBugfender.l(message, logLevel: LoglLevel.Info, tag: 'Info', methodName: methodName, className: className);
 ```
