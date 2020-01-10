@@ -24,9 +24,9 @@ class _MyAppState extends State<MyApp> {
       await FlutterBugfender.init("534EKHhDlA0cJuVyPKQNCtIVqMepG6P1");
       await FlutterBugfender.log("Working fine!");
       await FlutterBugfender.log("Working fine!", tag: "SpecialTag");
-      await FlutterBugfender.l("Working fin!e", tag: "Info", methodName: "method name", className: "class name");
-      await FlutterBugfender.warn("Warning sent!");
-      await FlutterBugfender.error("Error sent!");
+      await FlutterBugfender.l("Working fin!e", logLevel: LogLevel.Info, tag: "Info", methodName: "method name", className: "class name");
+      await FlutterBugfender.warn("Warning sent!", tag: "SpecialTag");
+      await FlutterBugfender.error("Error sent!", tag: "SpecialTag");
       await FlutterBugfender.setDeviceString("user.email", "example@example.com");
       await FlutterBugfender.setDeviceString("user.id", "1");
       await FlutterBugfender.setDeviceString("user.team", "EasyFlatBCN");
