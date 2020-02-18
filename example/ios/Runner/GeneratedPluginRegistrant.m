@@ -3,7 +3,12 @@
 //
 
 #import "GeneratedPluginRegistrant.h"
+
+#if __has_include(<flutter_bugfender/FlutterBugfenderPlugin.h>)
 #import <flutter_bugfender/FlutterBugfenderPlugin.h>
+#else
+@import flutter_bugfender;
+#endif
 
 @implementation GeneratedPluginRegistrant
 

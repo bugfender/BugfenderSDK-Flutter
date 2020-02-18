@@ -21,13 +21,17 @@ class _MyAppState extends State<MyApp> {
 
   initPlatformState() async {
     try {
-      await FlutterBugfender.init("534EKHhDlA0cJuVyPKQNCtIVqMepG6P1");
+      await FlutterBugfender.init("7QnXfriMYxZTVD1I7Xnx2Y2ibSWGd9JT");
       await FlutterBugfender.log("Working fine!");
-      await FlutterBugfender.warn("Warning sent!");
+      await FlutterBugfender.fatal("Fatal sent!");
       await FlutterBugfender.error("Error sent!");
+      await FlutterBugfender.warn("Warning sent!");
+      await FlutterBugfender.info("Info sent!");
+      await FlutterBugfender.debug("Debug sent!");
+      await FlutterBugfender.trace("Trace sent!");
       await FlutterBugfender.setDeviceString("user.email", "example@example.com");
       await FlutterBugfender.setDeviceString("user.id", "1");
-      await FlutterBugfender.setDeviceString("user.team", "EasyFlatBCN");
+      await FlutterBugfender.setDeviceString("user.team", "team1");
       await FlutterBugfender.removeDeviceString("user.team");
       await FlutterBugfender.sendIssue("Test Issue", "Issue value goes here!");
     } catch (e) {

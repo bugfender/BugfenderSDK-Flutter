@@ -3,19 +3,19 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_bugfender'
-  s.version          = '1.0.0'
+  s.version          = '1.1.0'
   s.summary          = 'BugfenderSDK plugin for Flutter'
   s.description      = <<-DESC
 Flutter plugin to enable Bugfender reporting.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://bugfender.com'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Your Company' => 'email@example.com' }
+  s.author           = { 'Bugfender team' => 'support@bugfender.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'BugfenderSDK'
+  s.dependency 'BugfenderSDK', '~> 1.7'
   
   s.ios.deployment_target = '8.0'
 end

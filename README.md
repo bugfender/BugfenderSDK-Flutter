@@ -32,8 +32,12 @@ FlutterBugfender.init("YOUR_APP_KEY");
 You can also call:
 
  * FlutterBugfender.log("Working fine!");
- * FlutterBugfender.warn("Warning sent!");
+ * FlutterBugfender.fatal("Fatal sent!");
  * FlutterBugfender.error("Error sent!");
+ * FlutterBugfender.warn("Warning sent!");
+ * FlutterBugfender.info("Info sent!");
+ * FlutterBugfender.debug("Debug sent!");
+ * FlutterBugfender.trace("Trace sent!");
  * FlutterBugfender.setDeviceString("user.email", "example@example.com");
  * FlutterBugfender.removeDeviceString("user.email");
  * FlutterBugfender.sendIssue("Test Issue", "Issue description goes here!");

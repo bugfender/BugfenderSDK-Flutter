@@ -1,0 +1,29 @@
+{
+  "name": "flutter_bugfender",
+  "version": "1.1.0",
+  "summary": "BugfenderSDK plugin for Flutter",
+  "description": "Flutter plugin to enable Bugfender reporting.",
+  "homepage": "https://bugfender.com",
+  "license": {
+    "file": "../LICENSE"
+  },
+  "authors": {
+    "Bugfender team": "support@bugfender.com"
+  },
+  "source": {
+    "path": "."
+  },
+  "source_files": "Classes/**/*",
+  "public_header_files": "Classes/**/*.h",
+  "dependencies": {
+    "Flutter": [
+
+    ],
+    "BugfenderSDK": [
+      "~> 1.7"
+    ]
+  },
+  "platforms": {
+    "ios": "8.0"
+  }
+}

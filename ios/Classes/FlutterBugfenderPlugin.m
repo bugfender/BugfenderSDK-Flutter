@@ -31,16 +31,28 @@
         NSDictionary *arguments = call.arguments;
         NSString *title = arguments[@"title"];
         NSString *value = arguments[@"value"];
-        [Bugfender sendIssueWithTitle:title text:value];
+        [Bugfender sendIssueReturningUrlWithTitle:title text:value];
         result(nil);
     } else if ([@"log" isEqualToString:call.method]) {
         BFLog (@"%@", call.arguments);
         result(nil);
-    } else if ([@"warn" isEqualToString:call.method]) {
-        BFLogWarn(@"%@", call.arguments);
+    } else if ([@"fatal" isEqualToString:call.method]) {
+        BFLogFatal(@"%@", call.arguments);
         result(nil);
     } else if ([@"error" isEqualToString:call.method]) {
         BFLogErr(@"%@", call.arguments);
+        result(nil);
+    } else if ([@"warn" isEqualToString:call.method]) {
+        BFLogWarn(@"%@", call.arguments);
+        result(nil);
+    } else if ([@"info" isEqualToString:call.method]) {
+        BFLogInfo(@"%@", call.arguments);
+        result(nil);
+    } else if ([@"debug" isEqualToString:call.method]) {
+        BFLog(@"%@", call.arguments);
+        result(nil);
+    } else if ([@"trace" isEqualToString:call.method]) {
+        BFLogTrace(@"%@", call.arguments);
         result(nil);
     } else {
         result(FlutterMethodNotImplemented);

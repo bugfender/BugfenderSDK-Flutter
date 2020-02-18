@@ -39,13 +39,33 @@ class FlutterBugfender {
     return _channel.invokeMethod("log", value);
   }
 
-  /// Warn about something.
+  /// Send a log with fatal level.
+  static Future<dynamic> fatal(String value) {
+    return _channel.invokeMethod("fatal", value);
+  }
+
+  /// Send a log with error level.
+  static Future<dynamic> error(String value) {
+    return _channel.invokeMethod("error", value);
+  }
+
+  /// Send a log with warning level.
   static Future<dynamic> warn(String value) {
     return _channel.invokeMethod("warn", value);
   }
 
-  /// Send an error.
-  static Future<dynamic> error(String value) {
-    return _channel.invokeMethod("error", value);
+  /// Send a log with info level.
+  static Future<dynamic> info(String value) {
+    return _channel.invokeMethod("info", value);
+  }
+
+  /// Send a log with trace level.
+  static Future<dynamic> trace(String value) {
+    return _channel.invokeMethod("trace", value);
+  }
+
+  /// Send a log with debug level.
+  static Future<dynamic> debug(String value) {
+    return _channel.invokeMethod("debug", value);
   }
 }

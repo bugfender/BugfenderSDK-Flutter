@@ -9,3 +9,5 @@ packages
 pubspec.lock
 .flutter-plugins
 **/.symlinks
+.flutter-plugins-dependencies
+.dart_tool/

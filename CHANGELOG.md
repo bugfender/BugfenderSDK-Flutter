@@ -1,3 +1,10 @@
+## [1.1.0] - New log levels
+
+* added new log levels, the "tag" is now always sent empty
+* updated example app
+* updated installation instructions in readme to point to pub.dev
+* removed unused dependency with Android support library
+
 ## [1.0.0] - Swift support - breaking change
 
 * replaced iOS SDK with Swift supported pod

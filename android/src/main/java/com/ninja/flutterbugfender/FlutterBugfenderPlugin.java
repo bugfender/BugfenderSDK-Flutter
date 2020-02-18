@@ -38,8 +38,8 @@ public class FlutterBugfenderPlugin implements MethodCallHandler {
             case "init":
                 String appKey = call.arguments();
                 Bugfender.init(activity.getApplicationContext(), appKey, BuildConfig.DEBUG);
-//                Bugfender.enableLogcatLogging();
-//                Bugfender.enableUIEventLogging(activity.getApplication());
+                Bugfender.enableLogcatLogging();
+                Bugfender.enableUIEventLogging(activity.getApplication());
                 result.success(null);
                 break;
             case "setDeviceString":
@@ -60,18 +60,33 @@ public class FlutterBugfenderPlugin implements MethodCallHandler {
                 result.success(null);
                 break;
             case "log":
-                String log = call.arguments();
-                Bugfender.d("Log", log);
-                result.success(null);
-                break;
-            case "warn":
-                String warn = call.arguments();
-                Bugfender.w("Warning", warn);
-                result.success(null);
-                break;
+            case "fatal":
             case "error":
-                String err = call.arguments();
-                Bugfender.e("Error", err);
+            case "warn":
+            case "info":
+            case "debug":
+            case "trace":
+                String log = call.arguments();
+                switch(call.method) {
+                    case "fatal":
+                        Bugfender.f("", log);
+                        break;
+                    case "error":
+                        Bugfender.e("", log);
+                        break;
+                    case "warn":
+                        Bugfender.w("", log);
+                        break;
+                    case "info":
+                        Bugfender.i("", log);
+                        break;
+                    case "trace":
+                        Bugfender.t("", log);
+                        break;
+                    default:
+                        Bugfender.d("", log);
+                        break;
+                }
                 result.success(null);
                 break;
             default:
