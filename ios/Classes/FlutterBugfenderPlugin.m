@@ -1,5 +1,5 @@
 #import "FlutterBugfenderPlugin.h"
-#import <BugfenderSDK/BugfenderSDK.h>
+@import BugfenderSDK;
 
 @implementation FlutterBugfenderPlugin
 + (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
