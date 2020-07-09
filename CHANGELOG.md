@@ -1,3 +1,7 @@
+## [1.2.0] - Updated Android library
+
+* updated the underlying library to Android SDK 3.+
+
 ## [1.1.0] - New log levels
 
 * added new log levels, the "tag" is now always sent empty

@@ -1,5 +1,5 @@
 group 'com.ninja.flutterbugfender'
-version '1.0-SNAPSHOT'
+version '1.2.0'
 
 buildscript {
     repositories {
@@ -30,7 +30,7 @@ android {
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
     lintOptions {
         disable 'InvalidPackage'
@@ -38,5 +38,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.bugfender.sdk:android:1.+'
+    implementation 'com.bugfender.sdk:android:3.+'
 }
