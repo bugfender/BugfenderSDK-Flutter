@@ -59,6 +59,11 @@ public class FlutterBugfenderPlugin implements MethodCallHandler {
                 Bugfender.sendIssue(title, issue_val);
                 result.success(null);
                 break;
+            case "setForceEnabled":
+                Boolean enabled = call.arguments();
+                Bugfender.setForceEnabled(enabled);
+                result.success(null);
+                break;
             case "log":
             case "fatal":
             case "error":

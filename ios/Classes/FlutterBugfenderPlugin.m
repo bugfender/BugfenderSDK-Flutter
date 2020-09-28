@@ -27,6 +27,10 @@
         NSString *key = call.arguments;
         [Bugfender removeDeviceKey:key];
         result(nil);
+    } else if ([@"setForceEnabled" isEqualToString:call.method]) {
+        NSString *key = call.arguments;
+        [Bugfender setForceEnabled:key];
+        result(nil);
     } else if ([@"sendIssue" isEqualToString:call.method]) {
         NSDictionary *arguments = call.arguments;
         NSString *title = arguments[@"title"];

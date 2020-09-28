@@ -3,6 +3,7 @@
 * **hits a CocoaPods bug** that is only solved in master ([see how to use CocoaPods in master](https://guides.cocoapods.org/using/a-gemfile.html))
 * updated the underlying libraries to iOS SDK ~>1.9
 * as a result, the deployment target version in iOS is now 10 (add `platform :ios, '10.0'` to your Podfile and `MinimumOSVersion`=`10.0` in your `AppFrameworkInfo.plist`)
+* add support for the `setForceEnabled()` function
 
 ## [1.2.0] - Updated Android library
 
