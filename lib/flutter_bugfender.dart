@@ -34,7 +34,7 @@ class FlutterBugfender {
     return _channel.invokeMethod("sendIssue", issue);
   }
 
-  /// Send an issue to BugFender
+  /// Force enable sending logs and crashes to Bugfender
   static Future<dynamic> setForceEnabled(bool enabled) {
     return _channel.invokeMethod("setForceEnabled", enabled);
   }
