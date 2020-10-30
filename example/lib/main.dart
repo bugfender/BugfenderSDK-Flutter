@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
 
   initPlatformState() async {
     try {
-      await FlutterBugfender.init("7QnXfriMYxZTVD1I7Xnx2Y2ibSWGd9JT");
+      await FlutterBugfender.init("7QnXfriMYxZTVD1I7Xnx2Y2ibSWGd9JT", enableAndroidLogcatLogging: false);
       await FlutterBugfender.log("Working fine!");
       await FlutterBugfender.fatal("Fatal sent!");
       await FlutterBugfender.error("Error sent!");

@@ -12,10 +12,30 @@
 
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
     if ([@"init" isEqualToString:call.method]) {
-        NSString *appKey = call.arguments;
+        NSString *appKey = call.arguments[@"appKey"];
+        NSString *apiUri = call.arguments[@"apiUri"];
+        NSString *baseUri = call.arguments[@"baseUri"];
+        long maximumLocalStorageSize = [call.arguments[@"maximumLocalStorageSize"] longValue];
+        BOOL printToConsole = [call.arguments[@"printToConsole"] boolValue];
+        BOOL enableUIEventLogging = [call.arguments[@"enableUIEventLogging"] boolValue];
+        BOOL enableCrashReporting = [call.arguments[@"enableCrashReporting"] boolValue];
+        NSString *overrideDeviceName = call.arguments[@"overrideDeviceName"];
+
+        if (overrideDeviceName.length)
+            [Bugfender overrideDeviceName:overrideDeviceName];
+        if (apiUri.length)
+            [Bugfender setApiURL:[NSURL URLWithString:apiUri]];
+        if (baseUri.length)
+            [Bugfender setBaseURL:[NSURL URLWithString:baseUri]];
         [Bugfender activateLogger:appKey];
-        [Bugfender enableUIEventLogging];
-        [Bugfender enableCrashReporting];
+        if (enableUIEventLogging)
+            [Bugfender enableUIEventLogging];
+        if (enableCrashReporting)
+            [Bugfender enableCrashReporting];
+        [Bugfender setPrintToConsole:printToConsole];
+        if (maximumLocalStorageSize) {
+            [Bugfender setMaximumLocalStorageSize:maximumLocalStorageSize];
+        }
         result(nil);
     } else if ([@"setDeviceString" isEqualToString:call.method]) {
         NSDictionary *arguments = call.arguments;

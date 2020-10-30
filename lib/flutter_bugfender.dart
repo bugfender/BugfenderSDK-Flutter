@@ -7,8 +7,19 @@ class FlutterBugfender {
       const MethodChannel('flutter_bugfender');
 
   /// Init Bugfender
-  static Future<void> init(String appKey) {
-    return _channel.invokeMethod("init", appKey);
+  static Future<void> init(String appKey, {Uri apiUri, Uri baseUri, int maximumLocalStorageSize, bool printToConsole = true, bool enableUIEventLogging = true, bool enableCrashReporting = true, bool enableAndroidLogcatLogging = true, String overrideDeviceName}) {
+    Map<String, Object> map = <String, Object>{
+      'appKey': appKey,
+      'apiUri': apiUri!=null ? apiUri.toString() : "",
+      'baseUri': baseUri!=null ? baseUri.toString() : "",
+      'maximumLocalStorageSize': maximumLocalStorageSize ?? 0,
+      'printToConsole': printToConsole,
+      'enableUIEventLogging': enableUIEventLogging,
+      'enableCrashReporting': enableCrashReporting,
+      'enableAndroidLogcatLogging': enableAndroidLogcatLogging,
+      'overrideDeviceName': overrideDeviceName ?? "",
+    };
+    return _channel.invokeMethod("init", map);
   }
 
   /// Set a custom device key-value

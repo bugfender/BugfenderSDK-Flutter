@@ -37,10 +37,32 @@ public class FlutterBugfenderPlugin implements MethodCallHandler {
     public void onMethodCall(MethodCall call, Result result) {
         switch (call.method) {
             case "init":
-                String appKey = call.arguments();
-                Bugfender.init(activity.getApplicationContext(), appKey, BuildConfig.DEBUG);
-                Bugfender.enableLogcatLogging();
-                Bugfender.enableUIEventLogging(activity.getApplication());
+                String appKey = call.argument("appKey");
+                String apiUri = call.argument("apiUri");
+                String baseUri = call.argument("baseUri");
+                int maximumLocalStorageSize = call.argument("maximumLocalStorageSize");
+                boolean printToConsole = call.argument("printToConsole");
+                boolean enableUIEventLogging = call.argument("enableUIEventLogging");
+                boolean enableCrashReporting = call.argument("enableCrashReporting");
+                boolean enableAndroidLogcatLogging = call.argument("enableAndroidLogcatLogging");
+                String overrideDeviceName = call.argument("overrideDeviceName");
+
+                if (overrideDeviceName != "")
+                    Bugfender.overrideDeviceName(overrideDeviceName);
+                if (apiUri != "")
+                    Bugfender.setApiUrl(apiUri);
+                if (baseUri != "")
+                    Bugfender.setBaseUrl(baseUri);
+                Bugfender.init(activity.getApplicationContext(), appKey, printToConsole);
+                if (enableAndroidLogcatLogging)
+                    Bugfender.enableLogcatLogging();
+                if (enableUIEventLogging)
+                    Bugfender.enableUIEventLogging(activity.getApplication());
+                if (enableCrashReporting)
+                    Bugfender.enableCrashReporting();
+                if (maximumLocalStorageSize != 0) {
+                    Bugfender.setMaximumLocalStorageSize(maximumLocalStorageSize);
+                }
                 result.success(null);
                 break;
             case "setDeviceString":
