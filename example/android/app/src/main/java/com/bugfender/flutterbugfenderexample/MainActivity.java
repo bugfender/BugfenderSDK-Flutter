@@ -1,4 +1,4 @@
-package com.ninja.flutterbugfenderexample;
+package com.bugfender.flutterbugfenderexample;
 
 import android.os.Bundle;
 

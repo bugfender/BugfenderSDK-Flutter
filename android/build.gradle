@@ -1,4 +1,4 @@
-group 'com.ninja.flutterbugfender'
+group 'com.bugfender.flutterbugfender'
 version '1.2.0'
 
 buildscript {

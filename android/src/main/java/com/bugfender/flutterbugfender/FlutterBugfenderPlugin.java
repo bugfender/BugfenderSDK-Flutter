@@ -1,4 +1,4 @@
-package com.ninja.flutterbugfender;
+package com.bugfender.flutterbugfender;
 
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;

@@ -23,7 +23,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.ninja.flutterbugfenderexample"
+        applicationId "com.bugfender.flutterbugfenderexample"
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
