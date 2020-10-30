@@ -1,6 +1,6 @@
 {
   "name": "flutter_bugfender",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "summary": "BugfenderSDK plugin for Flutter",
   "description": "Flutter plugin to enable Bugfender reporting.",
   "homepage": "https://bugfender.com",

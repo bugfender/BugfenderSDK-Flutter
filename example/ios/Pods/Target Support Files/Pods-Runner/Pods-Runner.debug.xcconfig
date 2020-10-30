@@ -1,5 +1,4 @@
-CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/flutter_bugfender" "${PODS_ROOT}/../.symlinks/flutter/ios" "${PODS_ROOT}/BugfenderSDK" "${PODS_XCFRAMEWORKS_BUILD_DIR}/BugfenderSDK"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/flutter_bugfender" "${PODS_ROOT}/../Flutter" "${PODS_ROOT}/BugfenderSDK" "${PODS_ROOT}/BugfenderSDK/BugfenderSDK.xcframework/ios-armv7_arm64" "${PODS_ROOT}/BugfenderSDK/BugfenderSDK.xcframework/ios-i386_x86_64-simulator" "${PODS_ROOT}/BugfenderSDK/BugfenderSDK.xcframework/ios-x86_64-maccatalyst"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
 HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/flutter_bugfender/flutter_bugfender.framework/Headers"
 LD_RUNPATH_SEARCH_PATHS = $(inherited) '@executable_path/Frameworks' '@loader_path/Frameworks'
@@ -8,5 +7,4 @@ PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)
 PODS_PODFILE_DIR_PATH = ${SRCROOT}/.
 PODS_ROOT = ${SRCROOT}/Pods
-PODS_XCFRAMEWORKS_BUILD_DIR = $(PODS_CONFIGURATION_BUILD_DIR)/XCFrameworkIntermediates
 USE_RECURSIVE_SCRIPT_INPUTS_IN_SCRIPT_PHASES = YES

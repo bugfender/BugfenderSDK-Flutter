@@ -1,16 +1,17 @@
 package com.ninja.flutterbugfender;
 
-import java.util.Map;
-
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
 import io.flutter.plugin.common.MethodChannel.Result;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.PluginRegistry.Registrar;
 
+import com.bugfender.android.BuildConfig;
 import com.bugfender.sdk.Bugfender;
 
 import android.app.Activity;
+
+import java.net.URL;
 
 /**
  * FlutterBugfenderPlugin
@@ -43,26 +44,68 @@ public class FlutterBugfenderPlugin implements MethodCallHandler {
                 result.success(null);
                 break;
             case "setDeviceString":
+            case "setDeviceInt":
+            case "setDeviceFloat":
+            case "setDeviceBool":
                 String key = call.argument("key");
-                String value = call.argument("value");
-                Bugfender.setDeviceString(key, value);
+                switch (call.method) {
+                    case "setDeviceString":
+                        String strvalue = call.argument("value");
+                        Bugfender.setDeviceString(key, strvalue);
+                        break;
+                    case "setDeviceInt":
+                        int intvalue = call.argument("value");
+                        Bugfender.setDeviceInteger(key, intvalue);
+                        break;
+                    case "setDeviceFloat":
+                        double floatvalue = call.argument("value");
+                        Bugfender.setDeviceFloat(key, (float)floatvalue); // losing precision here: flutter's native type is a double but Bugfender only supports float
+                        break;
+                    case "setDeviceBool":
+                        boolean boolvalue = call.argument("value");
+                        Bugfender.setDeviceBoolean(key, boolvalue);
+                        break;
+                }
                 result.success(null);
                 break;
-            case "removeDeviceString":
+            case "removeDeviceKey":
                 String key_to_remove = call.arguments();
                 Bugfender.removeDeviceKey(key_to_remove);
                 result.success(null);
                 break;
+            case "sendCrash":
             case "sendIssue":
+            case "sendUserFeedback":
                 String title = call.argument("title");
                 String issue_val = call.argument("value");
-                Bugfender.sendIssue(title, issue_val);
-                result.success(null);
+                URL url = null;
+                switch (call.method) {
+                    case "sendCrash":
+                        url = Bugfender.sendCrash(title, issue_val);
+                        break;
+                    case "sendIssue":
+                        url = Bugfender.sendIssue(title, issue_val);
+                        break;
+                    case "sendUserFeedback":
+                        url = Bugfender.sendUserFeedback(title, issue_val);
+                        break;
+                }
+                result.success(url.toString());
                 break;
             case "setForceEnabled":
                 Boolean enabled = call.arguments();
                 Bugfender.setForceEnabled(enabled);
                 result.success(null);
+                break;
+            case "forceSendOnce":
+                Bugfender.forceSendOnce();
+                result.success(null);
+                break;
+            case "getDeviceUri":
+                result.success(Bugfender.getDeviceUrl().toString());
+                break;
+            case "getSessionUri":
+                result.success(Bugfender.getSessionUrl().toString());
                 break;
             case "log":
             case "fatal":

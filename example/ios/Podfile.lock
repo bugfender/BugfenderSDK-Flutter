@@ -1,12 +1,12 @@
 PODS:
   - BugfenderSDK (1.9.2)
   - Flutter (1.0.0)
-  - flutter_bugfender (1.2.0):
+  - flutter_bugfender (1.2.1):
     - BugfenderSDK (~> 1.9)
     - Flutter
 
 DEPENDENCIES:
-  - Flutter (from `.symlinks/flutter/ios`)
+  - Flutter (from `Flutter`)
   - flutter_bugfender (from `.symlinks/plugins/flutter_bugfender/ios`)
 
 SPEC REPOS:
@@ -15,15 +15,15 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: ".symlinks/flutter/ios"
+    :path: Flutter
   flutter_bugfender:
     :path: ".symlinks/plugins/flutter_bugfender/ios"
 
 SPEC CHECKSUMS:
   BugfenderSDK: 31042f345e838dbe2b7e98ee543efaafc1c7ad58
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_bugfender: 1e5dd1983a72acea8bf45d95abcce61b0d9f3556
+  flutter_bugfender: 9b75ac09a4b4115705ec37add6b25d7734e0b67c
 
-PODFILE CHECKSUM: b02606947baaf3e07fcd71cb6f0c6149fcdf6bf2
+PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
 
 COCOAPODS: 1.9.3

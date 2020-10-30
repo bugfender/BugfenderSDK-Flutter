@@ -23,7 +23,25 @@
         NSString *value = arguments[@"value"];
         [Bugfender setDeviceString:value forKey:key];
         result(nil);
-    } else if ([@"removeDeviceString" isEqualToString:call.method]) {
+    } else if ([@"setDeviceInt" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        NSString *key = arguments[@"key"];
+        NSInteger value = [arguments[@"value"] integerValue];
+        [Bugfender setDeviceInteger:value forKey:key];
+        result(nil);
+    } else if ([@"setDeviceFloat" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        NSString *key = arguments[@"key"];
+        CGFloat value = [arguments[@"value"] floatValue];
+        [Bugfender setDeviceDouble:value forKey:key];
+        result(nil);
+    } else if ([@"setDeviceBool" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        NSString *key = arguments[@"key"];
+        BOOL value = [arguments[@"value"] boolValue];
+        [Bugfender setDeviceBOOL:value forKey:key];
+        result(nil);
+    } else if ([@"removeDeviceKey" isEqualToString:call.method]) {
         NSString *key = call.arguments;
         [Bugfender removeDeviceKey:key];
         result(nil);
@@ -31,12 +49,33 @@
         NSString *key = call.arguments;
         [Bugfender setForceEnabled:key];
         result(nil);
+    } else if ([@"forceSendOnce" isEqualToString:call.method]) {
+        [Bugfender forceSendOnce];
+        result(nil);
+    } else if ([@"sendCrash" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        NSString *title = arguments[@"title"];
+        NSString *value = arguments[@"value"];
+        NSURL* url = [Bugfender sendCrashWithTitle:title text:value];
+        result(url.absoluteString);
     } else if ([@"sendIssue" isEqualToString:call.method]) {
         NSDictionary *arguments = call.arguments;
         NSString *title = arguments[@"title"];
         NSString *value = arguments[@"value"];
-        [Bugfender sendIssueReturningUrlWithTitle:title text:value];
-        result(nil);
+        NSURL* url = [Bugfender sendIssueReturningUrlWithTitle:title text:value];
+        result(url.absoluteString);
+    } else if ([@"sendUserFeedback" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        NSString *title = arguments[@"title"];
+        NSString *value = arguments[@"value"];
+        NSURL* url = [Bugfender sendUserFeedbackReturningUrlWithSubject:title message:value];
+        result(url.absoluteString);
+    } else if ([@"getDeviceUri" isEqualToString:call.method]) {
+        NSURL* url = [Bugfender deviceIdentifierUrl];
+        result(url.absoluteString);
+    } else if ([@"getSessionUri" isEqualToString:call.method]) {
+        NSURL* url = [Bugfender sessionIdentifierUrl];
+        result(url.absoluteString);
     } else if ([@"log" isEqualToString:call.method]) {
         BFLog (@"%@", call.arguments);
         result(nil);
