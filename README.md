@@ -41,3 +41,4 @@ You can also call:
  * FlutterBugfender.setDeviceString("user.email", "example@example.com");
  * FlutterBugfender.removeDeviceString("user.email");
  * FlutterBugfender.sendIssue("Test Issue", "Issue description goes here!");
+ * FlutterBugfender.setForceEnabled(true);
