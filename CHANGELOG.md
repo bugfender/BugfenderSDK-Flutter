@@ -1,9 +1,13 @@
+## [1.2.2] - Add wrapper functions
+* add support for configuration options upon initialization (API endpoints, log to console, max storage size, automatic logging, device name)
+* add support for setForceEnabled, forceSendOnce, getDeviceUri, getSessionUri, set key-values other than string, send manual crashes, send user feedback
+* rename internal Android classes to com.bugfender package
+
 ## [1.2.1-rc1] - Updated libraries
 
 * **hits a CocoaPods bug** that is only solved in master ([see how to use CocoaPods in master](https://guides.cocoapods.org/using/a-gemfile.html))
 * updated the underlying libraries to iOS SDK ~>1.9
 * as a result, the deployment target version in iOS is now 10 (add `platform :ios, '10.0'` to your Podfile and `MinimumOSVersion`=`10.0` in your `AppFrameworkInfo.plist`)
-* add support for the `setForceEnabled()` function
 
 ## [1.2.0] - Updated Android library
 
