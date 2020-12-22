@@ -33,7 +33,7 @@ class FlutterBugfender {
   }
 
   /// Set a custom device key-value
-  static Future<void> setDeviceString(String key, String? value) {
+  static Future<void> setDeviceString(String key, String value) {
     return _channel.invokeMethod('setDeviceString', {
       'key': key,
       'value': value,
@@ -41,7 +41,7 @@ class FlutterBugfender {
   }
 
   /// Set a custom device key-value
-  static Future<void> setDeviceInt(String key, int? value) {
+  static Future<void> setDeviceInt(String key, int value) {
     return _channel.invokeMethod('setDeviceInt', {
       'key': key,
       'value': value,
@@ -49,7 +49,7 @@ class FlutterBugfender {
   }
 
   /// Set a custom device key-value
-  static Future<void> setDeviceFloat(String key, double? value) {
+  static Future<void> setDeviceFloat(String key, double value) {
     return _channel.invokeMethod('setDeviceFloat', {
       'key': key,
       'value': value,
@@ -57,7 +57,7 @@ class FlutterBugfender {
   }
 
   /// Set a custom device key-value
-  static Future<void> setDeviceBool(String key, bool? value) {
+  static Future<void> setDeviceBool(String key, bool value) {
     return _channel.invokeMethod('setDeviceBool', {
       'key': key,
       'value': value,
@@ -157,12 +157,12 @@ class FlutterBugfender {
   }
 
   /// Send a log with trace level.
-  static Future<void> trace(String? value) {
+  static Future<void> trace(String value) {
     return _channel.invokeMethod('trace', value);
   }
 
   /// Send a log with debug level.
-  static Future<void> debug(String? value) {
+  static Future<void> debug(String value) {
     return _channel.invokeMethod('debug', value);
   }
 }
