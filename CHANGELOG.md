@@ -1,3 +1,7 @@
+## [2.0.0-nullsafety.0]
+* bump minimum Dart SDK version to 2.12 prerelease
+* make appropriate method arguments non-nullable
+
 ## [1.2.2] - Add wrapper functions
 * add support for configuration options upon initialization (API endpoints, log to console, max storage size, automatic logging, device name)
 * add support for setForceEnabled, forceSendOnce, getDeviceUri, getSessionUri, set key-values other than string, send manual crashes, send user feedback
