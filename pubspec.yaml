@@ -12,10 +12,17 @@ flutter:
         pluginClass: FlutterBugfenderPlugin
       ios:
         pluginClass: FlutterBugfenderPlugin
+      web:
+        pluginClass: WebFlutterBugfender
+        fileName: flutter_bugfender_web.dart
 
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+
+  js: ^0.6.3-nullsafety.0
 
 environment:
   sdk: ">=2.12.0-0 <3.0.0"
