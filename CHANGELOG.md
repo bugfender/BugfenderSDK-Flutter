@@ -1,3 +1,6 @@
+## [2.0.0-web.1]
+* add support for web
+
 ## [2.0.0-nullsafety.0]
 * bump minimum Dart SDK version to 2.12 prerelease
 * make appropriate method arguments non-nullable

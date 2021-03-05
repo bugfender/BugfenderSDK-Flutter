@@ -8,3 +8,5 @@ build/
 ios/.generated/
 packages
 pubspec.lock
+Generated.xcconfig
+generated_plugin_registrant.dart
