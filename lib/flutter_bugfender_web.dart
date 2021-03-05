@@ -26,13 +26,13 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
       appKey: appKey,
       apiURL: apiUri?.toString() ?? 'https://api.bugfender.com',
       baseURL: baseUri?.toString() ?? 'https://dashboard.bugfender.com',
-      overrideConsoleMethods: printToConsole,
+      overrideConsoleMethods: false,
       printToConsole: printToConsole,
-      registerErrorHandler: true,
+      registerErrorHandler: enableCrashReporting,
       logBrowserEvents: enableUIEventLogging,
       logUIEvents: enableUIEventLogging,
-      version: version,
-      build: build,
+      version: version ?? '',
+      build: build ?? '',
     ));
   }
 
