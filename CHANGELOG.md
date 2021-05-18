@@ -1,3 +1,8 @@
+## [2.0.0]
+* releasing to stable now that Dart SDK version to 2.12 is stable
+* null safety
+* add support for web (loading js file from our cdn)
+
 ## [2.0.0-web.1]
 * add support for web
 
