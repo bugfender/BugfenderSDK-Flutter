@@ -1,40 +1,65 @@
 package com.bugfender.flutterbugfender;
 
-import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
-
-import com.bugfender.android.BuildConfig;
-import com.bugfender.sdk.Bugfender;
-
 import android.app.Activity;
 
+import androidx.annotation.NonNull;
+
+import com.bugfender.sdk.Bugfender;
+
+import org.jetbrains.annotations.NotNull;
+
 import java.net.URL;
+
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.common.MethodCall;
+import io.flutter.plugin.common.MethodChannel;
 
 /**
  * FlutterBugfenderPlugin
  */
-public class FlutterBugfenderPlugin implements MethodCallHandler {
+public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
 
-    private final Activity activity;
+    private  Activity activity;
 
-    private FlutterBugfenderPlugin(Activity activity) {
-        this.activity = activity;
+
+
+    @Override
+    public void onAttachedToEngine(@NonNull @org.jetbrains.annotations.NotNull FlutterPlugin.FlutterPluginBinding binding) {
+        final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), "flutter_bugfender");
+        channel.setMethodCallHandler(this);
     }
 
 
-    /**
-     * Plugin registration.
-     */
-    public static void registerWith(Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_bugfender");
-        channel.setMethodCallHandler(new FlutterBugfenderPlugin(registrar.activity()));
+
+    @Override
+    public void onDetachedFromEngine(@NonNull @org.jetbrains.annotations.NotNull FlutterPlugin.FlutterPluginBinding binding) {
+
     }
 
     @Override
-    public void onMethodCall(MethodCall call, Result result) {
+    public void onAttachedToActivity(@NonNull @NotNull ActivityPluginBinding binding) {
+        activity = binding.getActivity();
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(@NonNull @NotNull ActivityPluginBinding binding) {
+
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+
+    }
+
+    @Override
+    public void onMethodCall(@NonNull @NotNull MethodCall call, @NonNull @NotNull MethodChannel.Result result) {
         switch (call.method) {
             case "init":
                 String appKey = call.argument("appKey");
