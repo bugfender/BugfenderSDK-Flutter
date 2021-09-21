@@ -1,65 +1,36 @@
 package com.bugfender.flutterbugfender;
 
-import android.app.Activity;
-
+import android.app.Application;
+import android.content.Context;
 import androidx.annotation.NonNull;
-
 import com.bugfender.sdk.Bugfender;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.net.URL;
-
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.embedding.engine.plugins.activity.ActivityAware;
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+
+import java.net.URL;
 
 /**
  * FlutterBugfenderPlugin
  */
-public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
+public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.MethodCallHandler {
 
-    private  Activity activity;
-
-
+    private Context applicationContext;
 
     @Override
-    public void onAttachedToEngine(@NonNull @org.jetbrains.annotations.NotNull FlutterPlugin.FlutterPluginBinding binding) {
+    public void onAttachedToEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
         final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), "flutter_bugfender");
         channel.setMethodCallHandler(this);
-    }
-
-
-
-    @Override
-    public void onDetachedFromEngine(@NonNull @org.jetbrains.annotations.NotNull FlutterPlugin.FlutterPluginBinding binding) {
-
+        applicationContext = binding.getApplicationContext();
     }
 
     @Override
-    public void onAttachedToActivity(@NonNull @NotNull ActivityPluginBinding binding) {
-        activity = binding.getActivity();
+    public void onDetachedFromEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
+        applicationContext = null;
     }
 
     @Override
-    public void onDetachedFromActivityForConfigChanges() {
-
-    }
-
-    @Override
-    public void onReattachedToActivityForConfigChanges(@NonNull @NotNull ActivityPluginBinding binding) {
-
-    }
-
-    @Override
-    public void onDetachedFromActivity() {
-
-    }
-
-    @Override
-    public void onMethodCall(@NonNull @NotNull MethodCall call, @NonNull @NotNull MethodChannel.Result result) {
+    public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             case "init":
                 String appKey = call.argument("appKey");
@@ -78,11 +49,11 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
                     Bugfender.setApiUrl(apiUri);
                 if (baseUri != "")
                     Bugfender.setBaseUrl(baseUri);
-                Bugfender.init(activity.getApplicationContext(), appKey, printToConsole);
+                Bugfender.init(applicationContext, appKey, printToConsole);
                 if (enableAndroidLogcatLogging)
                     Bugfender.enableLogcatLogging();
                 if (enableUIEventLogging)
-                    Bugfender.enableUIEventLogging(activity.getApplication());
+                    Bugfender.enableUIEventLogging(((Application) applicationContext));
                 if (enableCrashReporting)
                     Bugfender.enableCrashReporting();
                 if (maximumLocalStorageSize != 0) {
