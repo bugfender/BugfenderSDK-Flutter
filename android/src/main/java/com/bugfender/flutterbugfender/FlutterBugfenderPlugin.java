@@ -1,40 +1,36 @@
 package com.bugfender.flutterbugfender;
 
-import io.flutter.plugin.common.MethodChannel;
-import io.flutter.plugin.common.MethodChannel.MethodCallHandler;
-import io.flutter.plugin.common.MethodChannel.Result;
-import io.flutter.plugin.common.MethodCall;
-import io.flutter.plugin.common.PluginRegistry.Registrar;
-
-import com.bugfender.android.BuildConfig;
+import android.app.Application;
+import android.content.Context;
+import androidx.annotation.NonNull;
 import com.bugfender.sdk.Bugfender;
-
-import android.app.Activity;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.plugin.common.MethodCall;
+import io.flutter.plugin.common.MethodChannel;
 
 import java.net.URL;
 
 /**
  * FlutterBugfenderPlugin
  */
-public class FlutterBugfenderPlugin implements MethodCallHandler {
+public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.MethodCallHandler {
 
-    private final Activity activity;
+    private Context applicationContext;
 
-    private FlutterBugfenderPlugin(Activity activity) {
-        this.activity = activity;
-    }
-
-
-    /**
-     * Plugin registration.
-     */
-    public static void registerWith(Registrar registrar) {
-        final MethodChannel channel = new MethodChannel(registrar.messenger(), "flutter_bugfender");
-        channel.setMethodCallHandler(new FlutterBugfenderPlugin(registrar.activity()));
+    @Override
+    public void onAttachedToEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
+        final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), "flutter_bugfender");
+        channel.setMethodCallHandler(this);
+        applicationContext = binding.getApplicationContext();
     }
 
     @Override
-    public void onMethodCall(MethodCall call, Result result) {
+    public void onDetachedFromEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
+        applicationContext = null;
+    }
+
+    @Override
+    public void onMethodCall(@NonNull MethodCall call, @NonNull MethodChannel.Result result) {
         switch (call.method) {
             case "init":
                 String appKey = call.argument("appKey");
@@ -53,11 +49,11 @@ public class FlutterBugfenderPlugin implements MethodCallHandler {
                     Bugfender.setApiUrl(apiUri);
                 if (baseUri != "")
                     Bugfender.setBaseUrl(baseUri);
-                Bugfender.init(activity.getApplicationContext(), appKey, printToConsole);
+                Bugfender.init(applicationContext, appKey, printToConsole);
                 if (enableAndroidLogcatLogging)
                     Bugfender.enableLogcatLogging();
                 if (enableUIEventLogging)
-                    Bugfender.enableUIEventLogging(activity.getApplication());
+                    Bugfender.enableUIEventLogging(((Application) applicationContext));
                 if (enableCrashReporting)
                     Bugfender.enableCrashReporting();
                 if (maximumLocalStorageSize != 0) {
