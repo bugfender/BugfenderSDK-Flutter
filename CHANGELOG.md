@@ -1,6 +1,7 @@
 ## [2.0.1]
-* update to Android pluygin to use embeding v2
-* removed jcenter decprecated repostiory from Android plugin & sample
+* update Android plugin to use embedding v2
+* removed jcenter deprecated repository from Android plugin & sample
+
 
 ## [2.0.0]
 * releasing to stable now that Dart SDK version to 2.12 is stable
