@@ -61,3 +61,7 @@ You can also call:
  * FlutterBugfender.getDeviceUri());
  * FlutterBugfender.getSessionUri());
 
+### Using this package in a web project
+The plugin assumes the Bugfender JS library is already loaded. You may load it by adding the following snippet to your `index.html` file:
+
+    <script defer src="https://js.bugfender.com/bugfender.js"></script>
