@@ -1,21 +1,52 @@
 package com.bugfender.flutterbugfender;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
+
 import androidx.annotation.NonNull;
+
 import com.bugfender.sdk.Bugfender;
+import com.bugfender.sdk.ui.FeedbackActivity;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+import io.flutter.plugin.common.PluginRegistry;
 
 import java.net.URL;
 
 /**
  * FlutterBugfenderPlugin
  */
-public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.MethodCallHandler {
+public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.MethodCallHandler, ActivityAware {
 
     private Context applicationContext;
+    private Activity activity;
+    private ActivityPluginBinding activityPluginBinding;
+
+    private static final int FEEDBACK_REQUEST_CODE = 9564;
+
+    private MethodChannel.Result feedbackScreenPendingResult;
+    private final PluginRegistry.ActivityResultListener feedbackActivityResultListener = new PluginRegistry.ActivityResultListener() {
+        @Override
+        public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
+            if (feedbackScreenPendingResult != null) {
+                if (requestCode == FEEDBACK_REQUEST_CODE) {
+                    if (resultCode == Activity.RESULT_OK) {
+                        feedbackScreenPendingResult.success(data.getExtras().getString(FeedbackActivity.RESULT_FEEDBACK_URL));
+                    } else {
+                        feedbackScreenPendingResult.success(null);
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+    };
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
@@ -43,19 +74,25 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
                 boolean enableAndroidLogcatLogging = call.argument("enableAndroidLogcatLogging");
                 String overrideDeviceName = call.argument("overrideDeviceName");
 
-                if (overrideDeviceName != "")
+                if (overrideDeviceName != "") {
                     Bugfender.overrideDeviceName(overrideDeviceName);
-                if (apiUri != "")
+                }
+                if (apiUri != "") {
                     Bugfender.setApiUrl(apiUri);
-                if (baseUri != "")
+                }
+                if (baseUri != "") {
                     Bugfender.setBaseUrl(baseUri);
+                }
                 Bugfender.init(applicationContext, appKey, printToConsole);
-                if (enableAndroidLogcatLogging)
+                if (enableAndroidLogcatLogging) {
                     Bugfender.enableLogcatLogging();
-                if (enableUIEventLogging)
+                }
+                if (enableUIEventLogging) {
                     Bugfender.enableUIEventLogging(((Application) applicationContext));
-                if (enableCrashReporting)
+                }
+                if (enableCrashReporting) {
                     Bugfender.enableCrashReporting();
+                }
                 if (maximumLocalStorageSize != 0) {
                     Bugfender.setMaximumLocalStorageSize(maximumLocalStorageSize);
                 }
@@ -77,7 +114,7 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
                         break;
                     case "setDeviceFloat":
                         double floatvalue = call.argument("value");
-                        Bugfender.setDeviceFloat(key, (float)floatvalue); // losing precision here: flutter's native type is a double but Bugfender only supports float
+                        Bugfender.setDeviceFloat(key, (float) floatvalue); // losing precision here: flutter's native type is a double but Bugfender only supports float
                         break;
                     case "setDeviceBool":
                         boolean boolvalue = call.argument("value");
@@ -133,7 +170,7 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
             case "debug":
             case "trace":
                 String log = call.arguments();
-                switch(call.method) {
+                switch (call.method) {
                     case "fatal":
                         Bugfender.f("", log);
                         break;
@@ -155,9 +192,63 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
                 }
                 result.success(null);
                 break;
+            case "getUserFeedback":
+                String feedbackTitle = call.argument("title");
+                String feedbackHint = call.argument("hint");
+                String feedbackSubjectHint = call.argument("subjectHint");
+                String feedbackMessageHint = call.argument("messageHint");
+                String feedbackSendButtonText = call.argument("sendButtonText");
+                this.feedbackScreenPendingResult = result;
+                activity.startActivityForResult(
+                        Bugfender.getUserFeedbackActivityIntent(
+                                activity,
+                                feedbackTitle,
+                                feedbackHint,
+                                feedbackSubjectHint,
+                                feedbackMessageHint,
+                                feedbackSendButtonText,
+                                null
+                        ),
+                        FEEDBACK_REQUEST_CODE
+                );
+                break;
             default:
                 result.notImplemented();
                 break;
         }
+    }
+
+    @Override
+    public void onAttachedToActivity(ActivityPluginBinding activityPluginBinding) {
+        activity = activityPluginBinding.getActivity();
+        addActivityResultListener(activityPluginBinding);
+    }
+
+    @Override
+    public void onDetachedFromActivityForConfigChanges() {
+        activity = null;
+        removeActivityResultListener();
+    }
+
+    @Override
+    public void onReattachedToActivityForConfigChanges(ActivityPluginBinding activityPluginBinding) {
+        activity = activityPluginBinding.getActivity();
+        addActivityResultListener(activityPluginBinding);
+    }
+
+    @Override
+    public void onDetachedFromActivity() {
+        activity = null;
+        removeActivityResultListener();
+    }
+
+    private void addActivityResultListener(ActivityPluginBinding activityPluginBinding) {
+        activityPluginBinding.addActivityResultListener(feedbackActivityResultListener);
+        this.activityPluginBinding = activityPluginBinding;
+    }
+
+    private void removeActivityResultListener() {
+        activityPluginBinding.removeActivityResultListener(feedbackActivityResultListener);
+        activityPluginBinding = null;
     }
 }

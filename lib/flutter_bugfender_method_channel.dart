@@ -2,7 +2,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 
 class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
-  static const MethodChannel _channel = const MethodChannel('flutter_bugfender');
+  static const MethodChannel _channel =
+      const MethodChannel('flutter_bugfender');
 
   @override
   Future<void> init(
@@ -113,12 +114,16 @@ class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
 
   @override
   Future<Uri> getDeviceUri() {
-    return _channel.invokeMethod('getDeviceUri').then((value) => Uri.parse(value));
+    return _channel
+        .invokeMethod('getDeviceUri')
+        .then((value) => Uri.parse(value));
   }
 
   @override
   Future<Uri> getSessionUri() {
-    return _channel.invokeMethod('getSessionUri').then((value) => Uri.parse(value));
+    return _channel
+        .invokeMethod('getSessionUri')
+        .then((value) => Uri.parse(value));
   }
 
   @override
@@ -154,5 +159,29 @@ class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
   @override
   Future<void> debug(String value) {
     return _channel.invokeMethod('debug', value);
+  }
+
+  @override
+  Future<Uri?> getUserFeedback(
+      {String title = "Feedback",
+      String hint = "Please insert your feedback here and click send",
+      String subjectHint = "Subject…",
+      String messageHint = "Your feedback…",
+      String sendButtonText = "Send",
+      String cancelButtonText = "Close"}) {
+    return _channel.invokeMethod('getUserFeedback', {
+      "title": title,
+      "hint": hint,
+      "subjectHint": subjectHint,
+      "messageHint": messageHint,
+      "sendButtonText": sendButtonText,
+      "cancelButtonText": cancelButtonText
+    }).then((value) {
+      if (value != null) {
+        return Uri.parse(value);
+      } else {
+        return null;
+      }
+    });
   }
 }

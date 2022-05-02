@@ -117,6 +117,29 @@
     } else if ([@"trace" isEqualToString:call.method]) {
         BFLogTrace(@"%@", call.arguments);
         result(nil);
+    } else if ([@"getUserFeedback" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        NSString *title = arguments[@"title"];
+        NSString *hint = arguments[@"hint"];
+        NSString *subjectHint = arguments[@"subjectHint"];
+        NSString *messageHint = arguments[@"messageHint"];
+        NSString *sendButtonText = arguments[@"sendButtonText"];
+        NSString *cancelButtonText = arguments[@"cancelButtonText"];
+
+        UIViewController * userFeedbackViewController = [Bugfender userFeedbackViewControllerWithTitle:title hint:hint subjectPlaceholder:subjectHint
+        messagePlaceholder:messageHint sendButtonTitle:sendButtonText cancelButtonTitle:cancelButtonText completion:^(BOOL feedbackSent, NSURL * _Nullable url) {
+            if (feedbackSent) {
+                result(url.absoluteString);
+            } else {
+                result(nil);
+            }
+        }];
+        userFeedbackViewController.modalPresentationStyle = UIModalPresentationFullScreen;
+        //if (@available(iOS 13.0, *)) {
+        //    userFeedbackViewController.modalInPresentation = YES;
+        //}
+        UIViewController* rootViewController = [[[[UIApplication sharedApplication]delegate] window] rootViewController];
+        [rootViewController presentViewController:userFeedbackViewController animated:YES completion:nil];
     } else {
         result(FlutterMethodNotImplemented);
     }

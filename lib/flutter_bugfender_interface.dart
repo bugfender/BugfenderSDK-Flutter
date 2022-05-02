@@ -109,6 +109,17 @@ abstract class FlutterBugfenderInterface {
     throw UnimplementedError('debug() has not been implemented.');
   }
 
+  Future<Uri?> getUserFeedback(
+      {String title = "Feedback",
+      String hint = "Please insert your feedback here and click send",
+      String subjectHint = "Subject…",
+      String messageHint = "Your feedback…",
+      String sendButtonText = "Send",
+      String cancelButtonText = "Close"}) {
+    throw UnimplementedError(
+        'getUserFeedback() has not been implemented');
+  }
+
   @visibleForTesting
   bool get isMock => false;
 

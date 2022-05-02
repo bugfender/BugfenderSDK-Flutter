@@ -53,6 +53,8 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _message = "All working fine!";
     });
+
+    print(await FlutterBugfender.getUserFeedback());
   }
 
   @override

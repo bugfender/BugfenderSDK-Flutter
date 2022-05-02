@@ -107,4 +107,15 @@ class FlutterBugfender {
 
   /// Send a log with debug level.
   static Future<void> debug(String value) => _flutterBugfenderInterface.debug(value);
+
+  /// Show a screen which asks for feedback.
+  /// Once the user closes the modal or sends the feedback the Future promise resolves with the result.
+  static Future<Uri?> getUserFeedback({
+    String title = "Feedback",
+    String hint = "Please insert your feedback here and click send",
+    String subjectHint = "Subject…",
+    String messageHint = "Your feedback…",
+    String sendButtonText = "Send",
+    String cancelButtonText = "Close"
+  }) => _flutterBugfenderInterface.getUserFeedback();
 }
