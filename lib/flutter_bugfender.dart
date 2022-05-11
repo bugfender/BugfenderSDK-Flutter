@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show FlutterErrorDetails, FlutterError;
 import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 
 final _flutterBugfenderInterface = FlutterBugfenderInterface.instance;
@@ -32,6 +33,33 @@ class FlutterBugfender {
         version: version,
         build: build,
       );
+
+  /// Helper method to allow Bugfender to detect uncaught exceptions and
+  /// report them.
+  ///
+  /// This method should be used inside main() mehtod and must wrap the call to
+  /// runApp():
+  ///
+  /// ```dart
+  /// void main() {
+  ///   FlutterBugfender.handleUncaughtErrors(() async {
+  ///     runApp(new MyApp());
+  ///   });
+  /// }
+  /// ```
+  static void handleUncaughtErrors<R>(R body()) async {
+    FlutterError.onError = (FlutterErrorDetails details) async {
+      FlutterError.presentError(details);
+
+      await FlutterBugfender.sendCrash(
+          details.exception.toString(), details.stack?.toString() ?? "");
+    };
+    runZonedGuarded(() {
+      body();
+    }, (Object error, StackTrace stack) async {
+      await FlutterBugfender.sendCrash(error.toString(), stack.toString());
+    });
+  }
 
   /// Set a custom device key-value
   static Future<void> setDeviceString(String key, String value) =>

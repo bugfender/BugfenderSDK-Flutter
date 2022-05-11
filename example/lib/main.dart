@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bugfender/flutter_bugfender.dart';
 
 void main() {
-  runApp(new MyApp());
+  FlutterBugfender.handleUncaughtErrors(() async {
+    runApp(new MyApp());
+  });
 }
 
 class MyApp extends StatefulWidget {
@@ -21,7 +25,7 @@ class _MyAppState extends State<MyApp> {
 
   initPlatformState() async {
     try {
-      await FlutterBugfender.init("<INSERT YOUR BUGFENDER APP KEY>",
+      await FlutterBugfender.init("EjOeAkNNgeGeP5k8sgGR0ppwSYOtUKie",
           printToConsole: true,
           enableCrashReporting: true,
           enableAndroidLogcatLogging: false,
@@ -67,6 +71,14 @@ class _MyAppState extends State<MyApp> {
     print(await FlutterBugfender.getUserFeedback());
   }
 
+  generateException() async {
+    var result = 100 ~/ 0;
+  }
+
+  generateError() {
+    throw Error();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -85,6 +97,18 @@ class _MyAppState extends State<MyApp> {
                   getUserFeedback();
                 },
                 child: Text('Show Feedback Screen'),
+              ),
+              new ElevatedButton(
+                onPressed: () {
+                  generateException();
+                },
+                child: Text('Generate exception'),
+              ),
+              new ElevatedButton(
+                onPressed: () {
+                  generateError();
+                },
+                child: Text('Generate error'),
               )
             ],
           ),
