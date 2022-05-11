@@ -61,7 +61,7 @@ abstract class FlutterBugfenderInterface {
     throw UnimplementedError('sendIssueMarkdown() has not been implemented.');
   }
 
-  Future<Uri> sendUserFeedback(String title, String markdown) {
+  Future<Uri> sendUserFeedback(String title, String text) {
     throw UnimplementedError('sendUserFeedback() has not been implemented.');
   }
 

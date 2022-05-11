@@ -21,7 +21,13 @@ class _MyAppState extends State<MyApp> {
 
   initPlatformState() async {
     try {
-      await FlutterBugfender.init("7QnXfriMYxZTVD1I7Xnx2Y2ibSWGd9JT", enableAndroidLogcatLogging: false);
+      await FlutterBugfender.init("<INSERT YOUR BUGFENDER APP KEY>",
+          printToConsole: true,
+          enableCrashReporting: true,
+          enableAndroidLogcatLogging: false,
+          overrideDeviceName: "Anonymous",
+          version: "1.0",
+          build: "555");
       await FlutterBugfender.log("Working fine!");
       await FlutterBugfender.fatal("Fatal sent!");
       await FlutterBugfender.error("Error sent!");
@@ -29,15 +35,17 @@ class _MyAppState extends State<MyApp> {
       await FlutterBugfender.info("Info sent!");
       await FlutterBugfender.debug("Debug sent!");
       await FlutterBugfender.trace("Trace sent!");
-      await FlutterBugfender.setDeviceString("user.email", "example@example.com");
+      await FlutterBugfender.setDeviceString(
+          "user.email", "example@example.com");
       await FlutterBugfender.setDeviceInt("user.id", 1);
       await FlutterBugfender.setDeviceFloat("user.weight", 1.234);
       await FlutterBugfender.setDeviceBool("user.team", true);
       await FlutterBugfender.removeDeviceKey("user.team");
       print(await FlutterBugfender.sendCrash("Test Crash", "Stacktrace here!"));
-      print(await FlutterBugfender.sendIssue("Test Issue", "Issue value goes here!"));
-      print(await FlutterBugfender.sendIssueMarkdown("Test Issue with markdown", "Issue _value_ **goes** here!"));
-      print(await FlutterBugfender.sendUserFeedback("Test user feedback", "User feedback details here!"));
+      print(await FlutterBugfender.sendIssue(
+          "Test Issue", "Issue value goes here!"));
+      print(await FlutterBugfender.sendUserFeedback(
+          "Test user feedback", "User feedback details here!"));
       await FlutterBugfender.setForceEnabled(true);
       await FlutterBugfender.setForceEnabled(false);
       await FlutterBugfender.forceSendOnce();
@@ -53,7 +61,9 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _message = "All working fine!";
     });
+  }
 
+  getUserFeedback() async {
     print(await FlutterBugfender.getUserFeedback());
   }
 
@@ -65,7 +75,19 @@ class _MyAppState extends State<MyApp> {
           title: new Text('Bugfender Plugin example app'),
         ),
         body: new Center(
-          child: new Text('$_message\n'),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              new Text('$_message\n'),
+              new ElevatedButton(
+                onPressed: () {
+                  getUserFeedback();
+                },
+                child: Text('Show Feedback Screen'),
+              )
+            ],
+          ),
         ),
       ),
     );

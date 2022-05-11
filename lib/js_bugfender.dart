@@ -4,7 +4,9 @@ library bugfender;
 import 'package:js/js.dart';
 
 @JS('Bugfender.init')
-external void init(Options options);
+external Object init(Options options);
+// Returning Object instead of void to be able to make use of promiseToFuture
+// on flutter_bugfender_web.dart
 
 @JS('Bugfender.setDeviceKey')
 external void setDeviceKey(String key, dynamic value);
@@ -18,9 +20,6 @@ external String sendCrash(String title, String stacktrace);
 @JS('Bugfender.sendIssue')
 external String sendIssue(String title, String text);
 
-@JS('Bugfender.sendIssueMarkdown')
-external String sendIssueMarkdown(String title, String markdown);
-
 @JS('Bugfender.sendUserFeedback')
 external String sendUserFeedback(String title, String markdown);
 
@@ -31,22 +30,52 @@ external String getDeviceURL();
 external String getSessionURL();
 
 @JS('Bugfender.trace')
-external void trace(String tag, String log);
+external void trace(String log);
 
 @JS('Bugfender.info')
-external void info(String tag, String log);
+external void info(String log);
 
 @JS('Bugfender.log')
-external void log(String tag, String log);
+external void log(String log);
 
 @JS('Bugfender.warn')
-external void warn(String tag, String log);
+external void warn(String log);
 
 @JS('Bugfender.error')
-external void error(String tag, String log);
+external void error(String log);
 
 @JS('Bugfender.fatal')
-external void fatal(String tag, String log);
+external void fatal(String log);
+
+@JS('Bugfender.forceSendOnce')
+external void forceSendOnce();
+
+@JS('Bugfender.getUserFeedback')
+external UserFeedbackResult getUserFeedback(UserFeedbackOptions userFeedbackOptions);
+
+@JS()
+@anonymous
+class UserFeedbackOptions {
+  external String? get  title;
+  external String? get hint;
+  external String? get subjectPlaceholder;
+  external String? get feedbackPlaceholder;
+  external String? get submitLabel;
+
+  external factory UserFeedbackOptions({
+    String? title,
+    String? hint,
+    String? subjectPlaceholder,
+    String? feedbackPlaceholder,
+    String? submitLabel,
+  });
+}
+
+@JS()
+class UserFeedbackResult {
+  external bool get isSent;
+  external String? get feedbackURL;
+}
 
 @JS()
 @anonymous
@@ -56,6 +85,8 @@ class Options {
   external String? get apiURL;
 
   external String? get baseURL;
+
+  external String? get deviceName;
 
   external bool get overrideConsoleMethods;
 
@@ -80,6 +111,7 @@ class Options {
     bool registerErrorHandler,
     bool logBrowserEvents,
     bool logUIEvents,
+    String? deviceName,
     String? version,
     String? build,
   });

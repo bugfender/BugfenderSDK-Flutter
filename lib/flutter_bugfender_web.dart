@@ -1,3 +1,5 @@
+import 'dart:js_util';
+
 import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
@@ -22,7 +24,7 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
     String? version,
     String? build,
   }) async {
-    bugfender_web.init(bugfender_web.Options(
+    return promiseToFuture(bugfender_web.init(bugfender_web.Options(
       appKey: appKey,
       apiURL: apiUri?.toString() ?? 'https://api.bugfender.com',
       baseURL: baseUri?.toString() ?? 'https://dashboard.bugfender.com',
@@ -31,9 +33,10 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
       registerErrorHandler: enableCrashReporting,
       logBrowserEvents: enableUIEventLogging,
       logUIEvents: enableUIEventLogging,
+      deviceName: overrideDeviceName,
       version: version ?? '',
       build: build ?? '',
-    ));
+    )));
   }
 
   @override
@@ -63,22 +66,26 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
 
   @override
   Future<Uri> sendCrash(String title, String stacktrace) async {
-    return Uri.parse(bugfender_web.sendCrash(title, stacktrace));
+    return promiseToFuture(bugfender_web.sendCrash(title, stacktrace))
+        .then((value) => Uri.parse(value));
   }
 
   @override
   Future<Uri> sendIssue(String title, String text) async {
-    return Uri.parse(bugfender_web.sendIssue(title, text));
+    return promiseToFuture(bugfender_web.sendIssue(title, text))
+        .then((value) => Uri.parse(value));
   }
 
   @override
   Future<Uri> sendIssueMarkdown(String title, String markdown) async {
-    return Uri.parse(bugfender_web.sendIssueMarkdown(title, markdown));
+    return promiseToFuture(bugfender_web.sendIssue(title, markdown))
+        .then((value) => Uri.parse(value));
   }
 
   @override
-  Future<Uri> sendUserFeedback(String title, String markdown) async {
-    return Uri.parse(bugfender_web.sendUserFeedback(title, markdown));
+  Future<Uri> sendUserFeedback(String title, String text) async {
+    return promiseToFuture(bugfender_web.sendUserFeedback(title, text))
+        .then((value) => Uri.parse(value));
   }
 
   @override
@@ -88,52 +95,77 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
 
   @override
   Future<void> forceSendOnce() async {
-    //todo not supported on web sdk
+    bugfender_web.forceSendOnce();
   }
 
   @override
   Future<Uri> getDeviceUri() async {
-    return Uri.parse(bugfender_web.getDeviceURL());
+    return promiseToFuture(bugfender_web.getDeviceURL())
+        .then((value) => Uri.parse(value));
   }
 
   @override
   Future<Uri> getSessionUri() async {
-    return Uri.parse(bugfender_web.getSessionURL());
+    return promiseToFuture(bugfender_web.getSessionURL())
+        .then((value) => Uri.parse(value));
   }
 
   @override
   Future<void> log(String value) async {
-    bugfender_web.log("", value);
+    bugfender_web.log(value);
   }
 
   @override
   Future<void> fatal(String value) async {
-    bugfender_web.fatal("", value);
+    bugfender_web.fatal(value);
   }
 
   @override
   Future<void> error(String value) async {
-    bugfender_web.error("", value);
+    bugfender_web.error(value);
   }
 
   @override
   Future<void> warn(String value) async {
-    bugfender_web.warn("", value);
+    bugfender_web.warn(value);
   }
 
   @override
   Future<void> info(String value) async {
-    bugfender_web.info("", value);
+    bugfender_web.info(value);
   }
 
   @override
   Future<void> trace(String value) async {
-    bugfender_web.trace("", value);
+    bugfender_web.trace(value);
   }
 
   @override
   Future<void> debug(String value) async {
-    //not found debug() on web sdk
-    bugfender_web.log("", value);
+    bugfender_web.log(value);
+  }
+
+  Future<Uri?> getUserFeedback(
+      {String title = "Feedback",
+      String hint = "Please insert your feedback here and click send",
+      String subjectHint = "Subject…",
+      String messageHint = "Your feedback…",
+      String sendButtonText = "Send",
+      String cancelButtonText = "Close"}) {
+    return promiseToFuture(
+        bugfender_web.getUserFeedback(bugfender_web.UserFeedbackOptions(
+      title: title,
+      hint: hint,
+      subjectPlaceholder: subjectHint,
+      feedbackPlaceholder: messageHint,
+      submitLabel: sendButtonText,
+    ))).then((value) {
+      var result = (value as bugfender_web.UserFeedbackResult);
+      if (result.isSent) {
+        return Uri.parse(result.feedbackURL!);
+      } else {
+        return null;
+      }
+    });
   }
 }

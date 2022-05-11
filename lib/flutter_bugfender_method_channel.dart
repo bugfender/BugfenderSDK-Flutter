@@ -95,10 +95,10 @@ class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
   }
 
   @override
-  Future<Uri> sendUserFeedback(String title, String markdown) {
+  Future<Uri> sendUserFeedback(String title, String text) {
     return _channel.invokeMethod('sendUserFeedback', {
       'title': title,
-      'value': markdown,
+      'value': text,
     }).then((value) => Uri.parse(value));
   }
 

@@ -67,12 +67,13 @@ class FlutterBugfender {
       _flutterBugfenderInterface.sendIssue(title, text);
 
   /// Send an issue to Bugfender
+  @Deprecated("Use sendIssue instead")
   static Future<Uri> sendIssueMarkdown(String title, String markdown) =>
       _flutterBugfenderInterface.sendIssueMarkdown(title, markdown);
 
   /// Send an issue to Bugfender
-  static Future<Uri> sendUserFeedback(String title, String markdown) =>
-      _flutterBugfenderInterface.sendUserFeedback(title, markdown);
+  static Future<Uri> sendUserFeedback(String title, String text) =>
+      _flutterBugfenderInterface.sendUserFeedback(title, text);
 
   /// Force enable sending logs and crashes to Bugfender and remember until reverted
   static Future<void> setForceEnabled(bool enabled) =>
