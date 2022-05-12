@@ -37,7 +37,7 @@ class FlutterBugfender {
   /// Helper method to allow Bugfender to detect uncaught exceptions and
   /// report them.
   ///
-  /// This method should be used inside main() mehtod and must wrap the call to
+  /// This method should be used inside main() method and must wrap the call to
   /// runApp():
   ///
   /// ```dart
