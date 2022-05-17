@@ -3,6 +3,7 @@ import 'dart:js_util';
 import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
+import 'flutter_bugfender.dart';
 import 'js_bugfender.dart' as bugfender_web;
 
 class WebFlutterBugfender extends FlutterBugfenderInterface {
@@ -108,6 +109,41 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
   Future<Uri> getSessionUri() async {
     return promiseToFuture(bugfender_web.getSessionURL())
         .then((value) => Uri.parse(value));
+  }
+
+  @override
+  Future<void> sendLog(
+      {int line = 0,
+      String method = "",
+      String file: "",
+      LogLevel level = LogLevel.debug,
+      String tag = "",
+      String text: ""}) async {
+    return bugfender_web.sendLog(bugfender_web.LogEntry(
+        line: line,
+        method: method,
+        file: file,
+        level: logLevelToInt(level),
+        tag: tag,
+        text: text,
+        url: ""));
+  }
+
+  logLevelToInt(LogLevel level) {
+    switch (level) {
+      case LogLevel.trace:
+        return 3;
+      case LogLevel.debug:
+        return 0;
+      case LogLevel.info:
+        return 4;
+      case LogLevel.warning:
+        return 1;
+      case LogLevel.error:
+        return 2;
+      case LogLevel.fatal:
+        return 5;
+    }
   }
 
   @override
