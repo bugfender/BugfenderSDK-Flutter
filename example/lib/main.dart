@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
 
   initPlatformState() async {
     try {
-      await FlutterBugfender.init("EjOeAkNNgeGeP5k8sgGR0ppwSYOtUKie",
+      await FlutterBugfender.init("<INSERT YOUR BUGFENDER APP KEY>",
           printToConsole: true,
           enableCrashReporting: true,
           enableAndroidLogcatLogging: false,
