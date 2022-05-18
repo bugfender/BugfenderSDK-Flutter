@@ -6,7 +6,25 @@ import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 final _flutterBugfenderInterface = FlutterBugfenderInterface.instance;
 
 class FlutterBugfender {
-  /// Init Bugfender
+  /// Init Bugfender with the following parameteres:
+  ///  - [appKey] - The app key to log into
+  ///  - [apiUri] - Base URL to Bugfender API
+  ///  - [baseUri] - Base URL to Bugfender web dashboard
+  ///  - [maximumLocalStorageSize] - Set the maximum size to store local log
+  ///  files. Defaults to 5 MB (Mobile specific).
+  ///  - [printToConsole] - Print to console when Bugfender logging methods are
+  ///  called. Defaults to `true`.
+  ///  - [enableUIEventLogging] - Register a handler for most common UI
+  ///  events to report them to Bugfender. Defaults to `true`.
+  ///  - [enableCrashReporting] Register error handler for native uncaught
+  ///  errors that reports a crash to Bugfender. Defaults to `true`.
+  ///  - [enableAndroidLogcatLogging] - Logs all logs written via Logcat.
+  ///  Defaults to `false`.
+  ///  - [overrideDeviceName] - Sets the name for the device. If the Device
+  ///  Name is not set, then the platform standard device name will be
+  ///  automatically sent
+  ///  - [version] - App version identifier (Web specific)
+  ///  - [build] - App build identifier (Web specific)
   static Future<void> init(
     String appKey, {
     Uri? apiUri,
@@ -15,7 +33,7 @@ class FlutterBugfender {
     bool printToConsole = true,
     bool enableUIEventLogging = true,
     bool enableCrashReporting = true,
-    bool enableAndroidLogcatLogging = true,
+    bool enableAndroidLogcatLogging = false,
     String? overrideDeviceName,
     String? version,
     String? build,
