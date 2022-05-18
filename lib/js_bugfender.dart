@@ -29,6 +29,9 @@ external String getDeviceURL();
 @JS('Bugfender.getSessionURL')
 external String getSessionURL();
 
+@JS('Bugfender.sendLog')
+external sendLog(LogEntry logEntry);
+
 @JS('Bugfender.trace')
 external void trace(String log);
 
@@ -52,6 +55,34 @@ external void forceSendOnce();
 
 @JS('Bugfender.getUserFeedback')
 external UserFeedbackResult getUserFeedback(UserFeedbackOptions userFeedbackOptions);
+
+@JS()
+@anonymous
+class LogEntry {
+  external int get line;
+
+  external int get level;
+
+  external String get tag;
+
+  external String get method;
+
+  external String get file;
+
+  external String get text;
+
+  external String get url;
+
+  external factory LogEntry({
+    int line,
+    int level,
+    String tag,
+    String method,
+    String file,
+    String text,
+    String url,
+  });
+}
 
 @JS()
 @anonymous

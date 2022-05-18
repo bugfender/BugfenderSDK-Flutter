@@ -25,7 +25,7 @@ class _MyAppState extends State<MyApp> {
 
   initPlatformState() async {
     try {
-      await FlutterBugfender.init("<INSERT YOUR BUGFENDER APP KEY>",
+      await FlutterBugfender.init("EjOeAkNNgeGeP5k8sgGR0ppwSYOtUKie",
           printToConsole: true,
           enableCrashReporting: true,
           enableAndroidLogcatLogging: false,
@@ -39,6 +39,19 @@ class _MyAppState extends State<MyApp> {
       await FlutterBugfender.info("Info sent!");
       await FlutterBugfender.debug("Debug sent!");
       await FlutterBugfender.trace("Trace sent!");
+      await FlutterBugfender.sendLog(
+          line: 42,
+          method: "fakeMethod()",
+          file:"fakeFile.fake",
+          level: LogLevel.info,
+          tag: "TAG",
+          text: "Custom log 1"
+      );
+
+      await FlutterBugfender.sendLog(
+          tag: "TAG",
+          text: "Custom log 2"
+      );
       await FlutterBugfender.setDeviceString(
           "user.email", "example@example.com");
       await FlutterBugfender.setDeviceInt("user.id", 1);

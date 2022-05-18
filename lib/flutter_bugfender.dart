@@ -5,6 +5,8 @@ import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 
 final _flutterBugfenderInterface = FlutterBugfenderInterface.instance;
 
+enum LogLevel { trace, debug, info, warning, error, fatal }
+
 class FlutterBugfender {
   /// Init Bugfender with the following parameteres:
   ///  - [appKey] - The app key to log into
@@ -134,6 +136,24 @@ class FlutterBugfender {
   /// Gets the URL to see the logs of this session
   static Future<Uri> getSessionUri() => _flutterBugfenderInterface.getSessionUri();
 
+  /// Send a log. Use this method if you need more control over the data sent
+  /// while logging
+  static Future<void> sendLog(
+      {int line = 0,
+        String method = "",
+        String file: "",
+        LogLevel level = LogLevel.debug,
+        String tag = "",
+        String text: ""}) =>
+      _flutterBugfenderInterface.sendLog(
+        line: line,
+        method: method,
+        file: file,
+        level: level,
+        tag: tag,
+        text: text
+      );
+
   /// Log something.
   static Future<void> log(String value) => _flutterBugfenderInterface.log(value);
 
@@ -157,12 +177,18 @@ class FlutterBugfender {
 
   /// Show a screen which asks for feedback.
   /// Once the user closes the modal or sends the feedback the Future promise resolves with the result.
-  static Future<Uri?> getUserFeedback({
-    String title = "Feedback",
-    String hint = "Please insert your feedback here and click send",
-    String subjectHint = "Subject…",
-    String messageHint = "Your feedback…",
-    String sendButtonText = "Send",
-    String cancelButtonText = "Close"
-  }) => _flutterBugfenderInterface.getUserFeedback();
+  static Future<Uri?> getUserFeedback(
+          {String title = "Feedback",
+          String hint = "Please insert your feedback here and click send",
+          String subjectHint = "Subject…",
+          String messageHint = "Your feedback…",
+          String sendButtonText = "Send",
+          String cancelButtonText = "Close"}) =>
+      _flutterBugfenderInterface.getUserFeedback(
+          title: title,
+          hint: hint,
+          subjectHint: subjectHint,
+          messageHint: messageHint,
+          sendButtonText: sendButtonText,
+          cancelButtonText: cancelButtonText);
 }
