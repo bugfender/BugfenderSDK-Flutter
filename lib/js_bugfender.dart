@@ -23,6 +23,9 @@ external String sendIssue(String title, String text);
 @JS('Bugfender.sendUserFeedback')
 external String sendUserFeedback(String title, String markdown);
 
+@JS('Bugfender.setForceEnabled')
+external setForceEnabled(bool enabled);
+
 @JS('Bugfender.getDeviceURL')
 external String getDeviceURL();
 
