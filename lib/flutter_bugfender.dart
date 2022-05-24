@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show FlutterErrorDetails, FlutterError;
 import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 
 final _flutterBugfenderInterface = FlutterBugfenderInterface.instance;
@@ -7,7 +8,25 @@ final _flutterBugfenderInterface = FlutterBugfenderInterface.instance;
 enum LogLevel { trace, debug, info, warning, error, fatal }
 
 class FlutterBugfender {
-  /// Init Bugfender
+  /// Init Bugfender with the following parameteres:
+  ///  - [appKey] - The app key to log into
+  ///  - [apiUri] - Base URL to Bugfender API
+  ///  - [baseUri] - Base URL to Bugfender web dashboard
+  ///  - [maximumLocalStorageSize] - Set the maximum size to store local log
+  ///  files, in bytes. Defaults to 5 MB (Mobile specific).
+  ///  - [printToConsole] - Print to console when Bugfender logging methods are
+  ///  called. Defaults to `true`.
+  ///  - [enableUIEventLogging] - Register a handler for most common UI
+  ///  events to report them to Bugfender. Defaults to `true`.
+  ///  - [enableCrashReporting] Register error handler for native uncaught
+  ///  errors that reports a crash to Bugfender. Defaults to `true`.
+  ///  - [enableAndroidLogcatLogging] - Logs all logs written via Logcat.
+  ///  Defaults to `false`.
+  ///  - [overrideDeviceName] - Sets the name for the device. If the Device
+  ///  Name is not set, then the platform standard device name will be
+  ///  automatically sent
+  ///  - [version] - App version identifier (Web specific)
+  ///  - [build] - App build identifier (Web specific)
   static Future<void> init(
     String appKey, {
     Uri? apiUri,
@@ -16,7 +35,7 @@ class FlutterBugfender {
     bool printToConsole = true,
     bool enableUIEventLogging = true,
     bool enableCrashReporting = true,
-    bool enableAndroidLogcatLogging = true,
+    bool enableAndroidLogcatLogging = false,
     String? overrideDeviceName,
     String? version,
     String? build,
@@ -34,6 +53,33 @@ class FlutterBugfender {
         version: version,
         build: build,
       );
+
+  /// Helper method to allow Bugfender to detect uncaught exceptions and
+  /// report them.
+  ///
+  /// This method should be used inside main() method and must wrap the call to
+  /// runApp():
+  ///
+  /// ```dart
+  /// void main() {
+  ///   FlutterBugfender.handleUncaughtErrors(() async {
+  ///     runApp(new MyApp());
+  ///   });
+  /// }
+  /// ```
+  static void handleUncaughtErrors<R>(R body()) async {
+    FlutterError.onError = (FlutterErrorDetails details) async {
+      FlutterError.presentError(details);
+
+      await FlutterBugfender.sendCrash(
+          details.exception.toString(), details.stack?.toString() ?? "");
+    };
+    runZonedGuarded(() {
+      body();
+    }, (Object error, StackTrace stack) async {
+      await FlutterBugfender.sendCrash(error.toString(), stack.toString());
+    });
+  }
 
   /// Set a custom device key-value
   static Future<void> setDeviceString(String key, String value) =>
