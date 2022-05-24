@@ -10,6 +10,32 @@
     [registrar addMethodCallDelegate:instance channel:channel];
 }
 
+- (BFLogLevel)intToLogLevel:(int) logLevelIndex {
+    switch (logLevelIndex) {
+        case 0:
+            return BFLogLevelTrace;
+            break;
+        case 1:
+            return BFLogLevelDefault;
+            break;
+        case 2:
+            return BFLogLevelInfo;
+            break;
+        case 3:
+            return BFLogLevelWarning;
+            break;
+        case 4:
+            return BFLogLevelError;
+            break;
+        case 5:
+            return BFLogLevelFatal;
+            break;
+        default:
+            return BFLogLevelDefault;
+            break;
+    }
+}
+
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
     if ([@"init" isEqualToString:call.method]) {
         NSString *appKey = call.arguments[@"appKey"];
@@ -96,6 +122,16 @@
     } else if ([@"getSessionUri" isEqualToString:call.method]) {
         NSURL* url = [Bugfender sessionIdentifierUrl];
         result(url.absoluteString);
+    } else if ([@"sendLog" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        NSString *lineNumber = arguments[@"line"];
+        NSString *method = arguments[@"method"];
+        NSString *file = arguments[@"file"];
+        NSString *levelOrdinal = arguments[@"level"];
+        NSString *tag = arguments[@"tag"];
+        NSString *text = arguments[@"text"];
+        [Bugfender logWithLineNumber: [lineNumber integerValue] method: method file: file level: [self intToLogLevel: [levelOrdinal integerValue]] tag: tag message: text];
+        result(nil);
     } else if ([@"log" isEqualToString:call.method]) {
         BFLog (@"%@", call.arguments);
         result(nil);

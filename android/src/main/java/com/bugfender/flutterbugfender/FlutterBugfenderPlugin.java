@@ -8,7 +8,11 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 
 import com.bugfender.sdk.Bugfender;
+import com.bugfender.sdk.LogLevel;
 import com.bugfender.sdk.ui.FeedbackActivity;
+
+import java.net.URL;
+import java.util.Objects;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -16,8 +20,6 @@ import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugin.common.PluginRegistry;
-
-import java.net.URL;
 
 /**
  * FlutterBugfenderPlugin
@@ -74,13 +76,13 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
                 boolean enableAndroidLogcatLogging = call.argument("enableAndroidLogcatLogging");
                 String overrideDeviceName = call.argument("overrideDeviceName");
 
-                if (overrideDeviceName != "") {
+                if (!Objects.equals(overrideDeviceName, "")) {
                     Bugfender.overrideDeviceName(overrideDeviceName);
                 }
-                if (apiUri != "") {
+                if (!Objects.equals(apiUri, "")) {
                     Bugfender.setApiUrl(apiUri);
                 }
-                if (baseUri != "") {
+                if (!Objects.equals(baseUri, "")) {
                     Bugfender.setBaseUrl(baseUri);
                 }
                 Bugfender.init(applicationContext, appKey, printToConsole);
@@ -161,6 +163,17 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
                 break;
             case "getSessionUri":
                 result.success(Bugfender.getSessionUrl().toString());
+                break;
+            case "sendLog":
+                int lineNumber = call.argument("line");
+                String method = call.argument("method");
+                String file = call.argument("file");
+                int levelOrdinal = call.argument("level");
+                LogLevel level = LogLevel.values()[levelOrdinal];
+                String tag = call.argument("tag");
+                String text = call.argument("text");
+                Bugfender.log(lineNumber, method, file, level, tag, text);
+                result.success(null);
                 break;
             case "log":
             case "fatal":

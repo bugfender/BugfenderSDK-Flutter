@@ -1,11 +1,32 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show FlutterErrorDetails, FlutterError;
 import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 
 final _flutterBugfenderInterface = FlutterBugfenderInterface.instance;
 
+enum LogLevel { trace, debug, info, warning, error, fatal }
+
 class FlutterBugfender {
-  /// Init Bugfender
+  /// Init Bugfender with the following parameteres:
+  ///  - [appKey] - The app key to log into
+  ///  - [apiUri] - Base URL to Bugfender API
+  ///  - [baseUri] - Base URL to Bugfender web dashboard
+  ///  - [maximumLocalStorageSize] - Set the maximum size to store local log
+  ///  files, in bytes. Defaults to 5 MB (Mobile specific).
+  ///  - [printToConsole] - Print to console when Bugfender logging methods are
+  ///  called. Defaults to `true`.
+  ///  - [enableUIEventLogging] - Register a handler for most common UI
+  ///  events to report them to Bugfender. Defaults to `true`.
+  ///  - [enableCrashReporting] Register error handler for native uncaught
+  ///  errors that reports a crash to Bugfender. Defaults to `true`.
+  ///  - [enableAndroidLogcatLogging] - Logs all logs written via Logcat.
+  ///  Defaults to `false`.
+  ///  - [overrideDeviceName] - Sets the name for the device. If the Device
+  ///  Name is not set, then the platform standard device name will be
+  ///  automatically sent
+  ///  - [version] - App version identifier (Web specific)
+  ///  - [build] - App build identifier (Web specific)
   static Future<void> init(
     String appKey, {
     Uri? apiUri,
@@ -14,7 +35,7 @@ class FlutterBugfender {
     bool printToConsole = true,
     bool enableUIEventLogging = true,
     bool enableCrashReporting = true,
-    bool enableAndroidLogcatLogging = true,
+    bool enableAndroidLogcatLogging = false,
     String? overrideDeviceName,
     String? version,
     String? build,
@@ -32,6 +53,33 @@ class FlutterBugfender {
         version: version,
         build: build,
       );
+
+  /// Helper method to allow Bugfender to detect uncaught exceptions and
+  /// report them.
+  ///
+  /// This method should be used inside main() method and must wrap the call to
+  /// runApp():
+  ///
+  /// ```dart
+  /// void main() {
+  ///   FlutterBugfender.handleUncaughtErrors(() async {
+  ///     runApp(new MyApp());
+  ///   });
+  /// }
+  /// ```
+  static void handleUncaughtErrors<R>(R body()) async {
+    FlutterError.onError = (FlutterErrorDetails details) async {
+      FlutterError.presentError(details);
+
+      await FlutterBugfender.sendCrash(
+          details.exception.toString(), details.stack?.toString() ?? "");
+    };
+    runZonedGuarded(() {
+      body();
+    }, (Object error, StackTrace stack) async {
+      await FlutterBugfender.sendCrash(error.toString(), stack.toString());
+    });
+  }
 
   /// Set a custom device key-value
   static Future<void> setDeviceString(String key, String value) =>
@@ -67,12 +115,13 @@ class FlutterBugfender {
       _flutterBugfenderInterface.sendIssue(title, text);
 
   /// Send an issue to Bugfender
+  @Deprecated("Use sendIssue instead")
   static Future<Uri> sendIssueMarkdown(String title, String markdown) =>
       _flutterBugfenderInterface.sendIssueMarkdown(title, markdown);
 
   /// Send an issue to Bugfender
-  static Future<Uri> sendUserFeedback(String title, String markdown) =>
-      _flutterBugfenderInterface.sendUserFeedback(title, markdown);
+  static Future<Uri> sendUserFeedback(String title, String text) =>
+      _flutterBugfenderInterface.sendUserFeedback(title, text);
 
   /// Force enable sending logs and crashes to Bugfender and remember until reverted
   static Future<void> setForceEnabled(bool enabled) =>
@@ -86,6 +135,24 @@ class FlutterBugfender {
 
   /// Gets the URL to see the logs of this session
   static Future<Uri> getSessionUri() => _flutterBugfenderInterface.getSessionUri();
+
+  /// Send a log. Use this method if you need more control over the data sent
+  /// while logging
+  static Future<void> sendLog(
+      {int line = 0,
+        String method = "",
+        String file: "",
+        LogLevel level = LogLevel.debug,
+        String tag = "",
+        String text: ""}) =>
+      _flutterBugfenderInterface.sendLog(
+        line: line,
+        method: method,
+        file: file,
+        level: level,
+        tag: tag,
+        text: text
+      );
 
   /// Log something.
   static Future<void> log(String value) => _flutterBugfenderInterface.log(value);
@@ -110,12 +177,18 @@ class FlutterBugfender {
 
   /// Show a screen which asks for feedback.
   /// Once the user closes the modal or sends the feedback the Future promise resolves with the result.
-  static Future<Uri?> getUserFeedback({
-    String title = "Feedback",
-    String hint = "Please insert your feedback here and click send",
-    String subjectHint = "Subject…",
-    String messageHint = "Your feedback…",
-    String sendButtonText = "Send",
-    String cancelButtonText = "Close"
-  }) => _flutterBugfenderInterface.getUserFeedback();
+  static Future<Uri?> getUserFeedback(
+          {String title = "Feedback",
+          String hint = "Please insert your feedback here and click send",
+          String subjectHint = "Subject…",
+          String messageHint = "Your feedback…",
+          String sendButtonText = "Send",
+          String cancelButtonText = "Close"}) =>
+      _flutterBugfenderInterface.getUserFeedback(
+          title: title,
+          hint: hint,
+          subjectHint: subjectHint,
+          messageHint: messageHint,
+          sendButtonText: sendButtonText,
+          cancelButtonText: cancelButtonText);
 }

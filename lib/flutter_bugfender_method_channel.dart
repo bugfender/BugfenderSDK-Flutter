@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
+import 'flutter_bugfender.dart';
 
 class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
   static const MethodChannel _channel =
@@ -95,10 +96,10 @@ class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
   }
 
   @override
-  Future<Uri> sendUserFeedback(String title, String markdown) {
+  Future<Uri> sendUserFeedback(String title, String text) {
     return _channel.invokeMethod('sendUserFeedback', {
       'title': title,
-      'value': markdown,
+      'value': text,
     }).then((value) => Uri.parse(value));
   }
 
@@ -124,6 +125,24 @@ class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
     return _channel
         .invokeMethod('getSessionUri')
         .then((value) => Uri.parse(value));
+  }
+
+  @override
+  Future<void> sendLog(
+      {int line = 0,
+        String method = "",
+        String file: "",
+        LogLevel level = LogLevel.debug,
+        String tag = "",
+        String text: ""}) {
+    return _channel.invokeMethod('sendLog', {
+      "line": line,
+      "method": method,
+      "file": file,
+      "level": level.index,
+      "tag": tag,
+      "text": text
+    });
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter_bugfender/flutter_bugfender_method_channel.dart';
 import 'package:meta/meta.dart';
+import 'flutter_bugfender.dart';
 
 abstract class FlutterBugfenderInterface {
   static FlutterBugfenderInterface _instance = MethodChannelFlutterBugfender();
@@ -61,7 +62,7 @@ abstract class FlutterBugfenderInterface {
     throw UnimplementedError('sendIssueMarkdown() has not been implemented.');
   }
 
-  Future<Uri> sendUserFeedback(String title, String markdown) {
+  Future<Uri> sendUserFeedback(String title, String text) {
     throw UnimplementedError('sendUserFeedback() has not been implemented.');
   }
 
@@ -79,6 +80,16 @@ abstract class FlutterBugfenderInterface {
 
   Future<Uri> getSessionUri() {
     throw UnimplementedError('getSessionUri() has not been implemented.');
+  }
+
+  Future<void> sendLog(
+      {int line = 0,
+      String method = "",
+      String file: "",
+      LogLevel level = LogLevel.debug,
+      String tag = "",
+      String text: ""}) {
+    throw UnimplementedError('sendLog() has not been implemented.');
   }
 
   Future<void> log(String value) {
@@ -116,8 +127,7 @@ abstract class FlutterBugfenderInterface {
       String messageHint = "Your feedback…",
       String sendButtonText = "Send",
       String cancelButtonText = "Close"}) {
-    throw UnimplementedError(
-        'getUserFeedback() has not been implemented');
+    throw UnimplementedError('getUserFeedback() has not been implemented');
   }
 
   @visibleForTesting
