@@ -91,7 +91,7 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
 
   @override
   Future<void> setForceEnabled(bool enabled) async {
-    //todo not supported on web sdk
+    return bugfender_web.setForceEnabled(enabled);
   }
 
   @override
