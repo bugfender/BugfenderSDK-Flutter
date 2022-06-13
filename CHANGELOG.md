@@ -1,7 +1,13 @@
+## [2.1.0]
+* added `getUserFeedback` method to all platforms
+* added `sendLog` & `forceSendOnce` methods to web platform
+* added helper function `handleUncaughtErrors` to handle Dart/Flutter errors
+* updated the underlying libraries to iOS SDK ~>1.10
+* updated Android gradle files
+
 ## [2.0.1]
 * update Android plugin to use embedding v2
 * removed jcenter deprecated repository from Android plugin & sample
-
 
 ## [2.0.0]
 * releasing to stable now that Dart SDK version to 2.12 is stable
