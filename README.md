@@ -12,7 +12,7 @@ Edit `pubspec.yaml` and add add `flutter_bugfender` to `dev_dependencies`:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_bugfender: ^2.0.1
+  flutter_bugfender: ^2.1.0
 ```
 
 Then run `flutter pub get` (or ‘Packages Get’ in IntelliJ) to download the package.
