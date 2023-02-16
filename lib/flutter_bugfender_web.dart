@@ -115,10 +115,10 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
   Future<void> sendLog(
       {int line = 0,
       String method = "",
-      String file: "",
+      String file = "",
       LogLevel level = LogLevel.debug,
       String tag = "",
-      String text: ""}) async {
+      String text = ""}) async {
     return bugfender_web.sendLog(bugfender_web.LogEntry(
         line: line,
         method: method,

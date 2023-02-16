@@ -85,10 +85,10 @@ abstract class FlutterBugfenderInterface {
   Future<void> sendLog(
       {int line = 0,
       String method = "",
-      String file: "",
+      String file = "",
       LogLevel level = LogLevel.debug,
       String tag = "",
-      String text: ""}) {
+      String text = ""}) {
     throw UnimplementedError('sendLog() has not been implemented.');
   }
 

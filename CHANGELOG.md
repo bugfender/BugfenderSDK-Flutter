@@ -1,3 +1,6 @@
+## [2.1.1]
+* fix `setForceEnabled` argument was always evaluated to true on iOS
+
 ## [2.1.0]
 * added `getUserFeedback` method to all platforms
 * added `sendLog` & `forceSendOnce` methods to web platform

@@ -131,10 +131,10 @@ class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
   Future<void> sendLog(
       {int line = 0,
         String method = "",
-        String file: "",
+        String file = "",
         LogLevel level = LogLevel.debug,
         String tag = "",
-        String text: ""}) {
+        String text = ""}) {
     return _channel.invokeMethod('sendLog', {
       "line": line,
       "method": method,
