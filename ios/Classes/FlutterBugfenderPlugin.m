@@ -92,8 +92,8 @@
         [Bugfender removeDeviceKey:key];
         result(nil);
     } else if ([@"setForceEnabled" isEqualToString:call.method]) {
-        NSString *key = call.arguments;
-        [Bugfender setForceEnabled:key];
+        BOOL enable = [call.arguments boolValue];
+        [Bugfender setForceEnabled:enable];
         result(nil);
     } else if ([@"forceSendOnce" isEqualToString:call.method]) {
         [Bugfender forceSendOnce];
