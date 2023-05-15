@@ -1,3 +1,6 @@
+## [2.1.2]
+* Add support for Gradle 8 builds
+
 ## [2.1.1]
 * fix `setForceEnabled` argument was always evaluated to true on iOS
 
