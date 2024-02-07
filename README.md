@@ -26,11 +26,11 @@ import 'package:flutter_bugfender/flutter_bugfender.dart';
 And in your main application builder:
 
 ```
-FlutterBugfender.init("YOUR_APP_KEY");
+await FlutterBugfender.init("YOUR_APP_KEY");
 ```
 
 There are other init options:
-* apiUri and baseUri: alternative URLs for on-premise installations
+* apiUri and baseUri: alternative URLs for on-premises installations
 * maximumLocalStorageSize: maximum size the local log cache will use, in bytes
 * printToConsole: whether to print to console or not
 * enableUIEventLogging: enable automatic logging of user interactions for native elements.
