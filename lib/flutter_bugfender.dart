@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'package:flutter/widgets.dart';
 
-import 'package:flutter/foundation.dart' show FlutterErrorDetails, FlutterError;
 import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 
 final _flutterBugfenderInterface = FlutterBugfenderInterface.instance;
@@ -23,8 +23,8 @@ class FlutterBugfender {
   ///  - [enableAndroidLogcatLogging] - Logs all logs written via Logcat.
   ///  Defaults to `false`.
   ///  - [overrideDeviceName] - Sets the name for the device. If the Device
-  ///  Name is not set, then the platform standard device name will be
-  ///  automatically sent
+  ///  Name is not set, then the device model will be automatically sent.
+  ///  Deprecated, prefer `FlutterBugfender.setDeviceString()` instead.
   ///  - [version] - App version identifier (Web specific)
   ///  - [build] - App build identifier (Web specific)
   static Future<void> init(
@@ -36,23 +36,26 @@ class FlutterBugfender {
     bool enableUIEventLogging = true,
     bool enableCrashReporting = true,
     bool enableAndroidLogcatLogging = false,
+    @Deprecated('Prefer `setDeviceString()` instead')
     String? overrideDeviceName,
     String? version,
     String? build,
-  }) =>
-      _flutterBugfenderInterface.init(
-        appKey,
-        apiUri: apiUri,
-        baseUri: baseUri,
-        maximumLocalStorageSize: maximumLocalStorageSize,
-        enableAndroidLogcatLogging: enableAndroidLogcatLogging,
-        enableCrashReporting: enableCrashReporting,
-        enableUIEventLogging: enableUIEventLogging,
-        overrideDeviceName: overrideDeviceName,
-        printToConsole: printToConsole,
-        version: version,
-        build: build,
-      );
+  }) {
+    WidgetsFlutterBinding.ensureInitialized();
+    return _flutterBugfenderInterface.init(
+      appKey,
+      apiUri: apiUri,
+      baseUri: baseUri,
+      maximumLocalStorageSize: maximumLocalStorageSize,
+      enableAndroidLogcatLogging: enableAndroidLogcatLogging,
+      enableCrashReporting: enableCrashReporting,
+      enableUIEventLogging: enableUIEventLogging,
+      overrideDeviceName: overrideDeviceName,
+      printToConsole: printToConsole,
+      version: version,
+      build: build,
+    );
+  }
 
   /// Helper method to allow Bugfender to detect uncaught exceptions and
   /// report them.
@@ -128,52 +131,61 @@ class FlutterBugfender {
       _flutterBugfenderInterface.setForceEnabled(enabled);
 
   /// Force enable sending logs and crashes to Bugfender, only for this session
-  static Future<void> forceSendOnce() => _flutterBugfenderInterface.forceSendOnce();
+  static Future<void> forceSendOnce() =>
+      _flutterBugfenderInterface.forceSendOnce();
 
   /// Gets the URL to see the logs of this device
-  static Future<Uri> getDeviceUri() => _flutterBugfenderInterface.getDeviceUri();
+  static Future<Uri> getDeviceUri() =>
+      _flutterBugfenderInterface.getDeviceUri();
 
   /// Gets the URL to see the logs of this session
-  static Future<Uri> getSessionUri() => _flutterBugfenderInterface.getSessionUri();
+  static Future<Uri> getSessionUri() =>
+      _flutterBugfenderInterface.getSessionUri();
 
   /// Send a log. Use this method if you need more control over the data sent
   /// while logging
   static Future<void> sendLog(
-      {int line = 0,
-        String method = "",
-        String file = "",
-        LogLevel level = LogLevel.debug,
-        String tag = "",
-        String text = ""}) =>
+          {int line = 0,
+          String method = "",
+          String file = "",
+          LogLevel level = LogLevel.debug,
+          String tag = "",
+          String text = ""}) =>
       _flutterBugfenderInterface.sendLog(
-        line: line,
-        method: method,
-        file: file,
-        level: level,
-        tag: tag,
-        text: text
-      );
+          line: line,
+          method: method,
+          file: file,
+          level: level,
+          tag: tag,
+          text: text);
 
   /// Log something.
-  static Future<void> log(String value) => _flutterBugfenderInterface.log(value);
+  static Future<void> log(String value) =>
+      _flutterBugfenderInterface.log(value);
 
   /// Send a log with fatal level.
-  static Future<void> fatal(String value) => _flutterBugfenderInterface.fatal(value);
+  static Future<void> fatal(String value) =>
+      _flutterBugfenderInterface.fatal(value);
 
   /// Send a log with error level.
-  static Future<void> error(String value) => _flutterBugfenderInterface.error(value);
+  static Future<void> error(String value) =>
+      _flutterBugfenderInterface.error(value);
 
   /// Send a log with warning level.
-  static Future<void> warn(String value) => _flutterBugfenderInterface.warn(value);
+  static Future<void> warn(String value) =>
+      _flutterBugfenderInterface.warn(value);
 
   /// Send a log with info level.
-  static Future<void> info(String value) => _flutterBugfenderInterface.info(value);
+  static Future<void> info(String value) =>
+      _flutterBugfenderInterface.info(value);
 
   /// Send a log with trace level.
-  static Future<void> trace(String value) => _flutterBugfenderInterface.trace(value);
+  static Future<void> trace(String value) =>
+      _flutterBugfenderInterface.trace(value);
 
   /// Send a log with debug level.
-  static Future<void> debug(String value) => _flutterBugfenderInterface.debug(value);
+  static Future<void> debug(String value) =>
+      _flutterBugfenderInterface.debug(value);
 
   /// Show a screen which asks for feedback.
   /// Once the user closes the modal or sends the feedback the Future promise resolves with the result.

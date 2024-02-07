@@ -1,3 +1,9 @@
+## [2.2.0]
+* Update: Call `WidgetsFlutterBinding.ensureInitialized()` in the initializer to make sure native plugins are loaded.
+  This makes fewer asumptions on how the plugin is initialized.
+* Update: Deprecate `overrideDeviceName` init parameter
+* Bugfix: Improve installation instructions in README.md
+
 ## [2.1.2]
 * Add support for Gradle 8 builds
 
