@@ -1,10 +1,16 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bugfender/flutter_bugfender.dart';
 
 void main() {
   FlutterBugfender.handleUncaughtErrors(() async {
+    await FlutterBugfender.init("<INSERT YOUR BUGFENDER APP KEY>",
+        printToConsole: true,
+        enableCrashReporting: true,
+        enableAndroidLogcatLogging: false,
+        overrideDeviceName: "Anonymous",
+        version: "1.0",
+        build: "555");
+    FlutterBugfender.log("hello world!");
     runApp(new MyApp());
   });
 }
@@ -25,47 +31,35 @@ class _MyAppState extends State<MyApp> {
 
   initPlatformState() async {
     try {
-      await FlutterBugfender.init("<INSERT YOUR BUGFENDER APP KEY>",
-          printToConsole: true,
-          enableCrashReporting: true,
-          enableAndroidLogcatLogging: false,
-          overrideDeviceName: "Anonymous",
-          version: "1.0",
-          build: "555");
-      await FlutterBugfender.log("Working fine!");
-      await FlutterBugfender.fatal("Fatal sent!");
-      await FlutterBugfender.error("Error sent!");
-      await FlutterBugfender.warn("Warning sent!");
-      await FlutterBugfender.info("Info sent!");
-      await FlutterBugfender.debug("Debug sent!");
-      await FlutterBugfender.trace("Trace sent!");
-      await FlutterBugfender.sendLog(
+      FlutterBugfender.log("Working fine!");
+      FlutterBugfender.fatal("Fatal sent!");
+      FlutterBugfender.error("Error sent!");
+      FlutterBugfender.warn("Warning sent!");
+      FlutterBugfender.info("Info sent!");
+      FlutterBugfender.debug("Debug sent!");
+      FlutterBugfender.trace("Trace sent!");
+      FlutterBugfender.sendLog(
           line: 42,
           method: "fakeMethod()",
-          file:"fakeFile.fake",
+          file: "fakeFile.fake",
           level: LogLevel.info,
           tag: "TAG",
-          text: "Custom log 1"
-      );
+          text: "Custom log 1");
 
-      await FlutterBugfender.sendLog(
-          tag: "TAG",
-          text: "Custom log 2"
-      );
-      await FlutterBugfender.setDeviceString(
-          "user.email", "example@example.com");
-      await FlutterBugfender.setDeviceInt("user.id", 1);
-      await FlutterBugfender.setDeviceFloat("user.weight", 1.234);
-      await FlutterBugfender.setDeviceBool("user.team", true);
-      await FlutterBugfender.removeDeviceKey("user.team");
+      FlutterBugfender.sendLog(tag: "TAG", text: "Custom log 2");
+      FlutterBugfender.setDeviceString("user.email", "example@example.com");
+      FlutterBugfender.setDeviceInt("user.id", 1);
+      FlutterBugfender.setDeviceFloat("user.weight", 1.234);
+      FlutterBugfender.setDeviceBool("user.team", true);
+      FlutterBugfender.removeDeviceKey("user.team");
       print(await FlutterBugfender.sendCrash("Test Crash", "Stacktrace here!"));
       print(await FlutterBugfender.sendIssue(
           "Test Issue", "Issue value goes here!"));
       print(await FlutterBugfender.sendUserFeedback(
           "Test user feedback", "User feedback details here!"));
-      await FlutterBugfender.setForceEnabled(true);
-      await FlutterBugfender.setForceEnabled(false);
-      await FlutterBugfender.forceSendOnce();
+      FlutterBugfender.setForceEnabled(true);
+      FlutterBugfender.setForceEnabled(false);
+      FlutterBugfender.forceSendOnce();
       print(await FlutterBugfender.getDeviceUri());
       print(await FlutterBugfender.getSessionUri());
     } catch (e) {
