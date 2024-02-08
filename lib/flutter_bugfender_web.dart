@@ -1,5 +1,6 @@
 import 'dart:js_util';
 
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
@@ -25,6 +26,7 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
     String? version,
     String? build,
   }) async {
+    WidgetsFlutterBinding.ensureInitialized();
     return promiseToFuture(bugfender_web.init(bugfender_web.Options(
       appKey: appKey,
       apiURL: apiUri?.toString() ?? 'https://api.bugfender.com',
