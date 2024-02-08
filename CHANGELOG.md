@@ -3,6 +3,7 @@
   This makes fewer asumptions on how the plugin is initialized.
 * Update: Deprecate `overrideDeviceName` init parameter
 * Bugfix: Improve installation instructions in README.md
+* Bugfix: Crash when `overrideDeviceName` was missing in web
 
 ## [2.1.2]
 * Add support for Gradle 8 builds
