@@ -31,7 +31,7 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
     WidgetsFlutterBinding.ensureInitialized();
 
     // options keys are variable. For example, the "apiURL" key may or may not be present.
-    // We can't use Dart classes with automatic converstion because Dart properties of a class are null when unset, but Bugfender.init() expects undefined.
+    // We can't use Dart classes with automatic conversion because Dart properties of a class are null when unset, but Bugfender.init() expects undefined.
     var options = {
       'appKey': appKey,
       'overrideConsoleMethods': false,
