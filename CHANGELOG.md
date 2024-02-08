@@ -1,3 +1,6 @@
+## [2.3.0]
+* Update: On web, loading the `<script src="https://js.bugfender.com/bugfender-v2.js"></script>` script in the `index.html` page is no longer necessary.
+
 ## [2.2.0]
 * Update: Call `WidgetsFlutterBinding.ensureInitialized()` in the initializer to make sure native plugins are loaded.
   This makes fewer asumptions on how the plugin is initialized.
