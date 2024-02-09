@@ -7,7 +7,6 @@ void main() {
         printToConsole: true,
         enableCrashReporting: true,
         enableAndroidLogcatLogging: false,
-        overrideDeviceName: "Anonymous",
         version: "1.0",
         build: "555");
     FlutterBugfender.log("hello world!");

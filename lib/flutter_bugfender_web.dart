@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:js';
 import 'dart:js_util';
 
 import 'package:flutter/widgets.dart';
@@ -17,7 +19,7 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
     String appKey, {
     Uri? apiUri,
     Uri? baseUri,
-    int? maximumLocalStorageSize,
+    int? maximumLocalStorageSize, // note this is ignored in web
     bool printToConsole = true,
     bool enableUIEventLogging = true,
     bool enableCrashReporting = true,
@@ -27,19 +29,44 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
     String? build,
   }) async {
     WidgetsFlutterBinding.ensureInitialized();
-    return promiseToFuture(bugfender_web.init(bugfender_web.Options(
-      appKey: appKey,
-      apiURL: apiUri?.toString() ?? 'https://api.bugfender.com',
-      baseURL: baseUri?.toString() ?? 'https://dashboard.bugfender.com',
-      overrideConsoleMethods: false,
-      printToConsole: printToConsole,
-      registerErrorHandler: enableCrashReporting,
-      logBrowserEvents: enableUIEventLogging,
-      logUIEvents: enableUIEventLogging,
-      deviceName: overrideDeviceName,
-      version: version ?? '',
-      build: build ?? '',
-    )));
+
+    // options keys are variable. For example, the "apiURL" key may or may not be present.
+    // We can't use Dart classes with automatic conversion because Dart properties of a class are null when unset, but Bugfender.init() expects undefined.
+    var options = {
+      'appKey': appKey,
+      'overrideConsoleMethods': false,
+      'printToConsole': printToConsole,
+      'registerErrorHandler': enableCrashReporting,
+      'logBrowserEvents': enableUIEventLogging,
+      'logUIEvents': enableUIEventLogging,
+    };
+    if (apiUri != null) {
+      options['apiURL'] = apiUri.toString();
+    }
+    if (baseUri != null) {
+      options['baseURL'] = baseUri.toString();
+    }
+    if (overrideDeviceName != null) {
+      options['deviceName'] = overrideDeviceName;
+    }
+    if (version != null) {
+      options['version'] = version;
+    }
+    if (build != null) {
+      options['build'] = build;
+    }
+
+    // call Bugfender.init(options)
+    JsObject jsPromise =
+        context['Bugfender'].callMethod('init', [JsObject.jsify(options)]);
+
+    // convert the JS Promise to a Dart Future
+    final completer = new Completer<void>();
+    jsPromise.callMethod('then', [
+      allowInterop(completer.complete),
+      allowInterop(completer.completeError)
+    ]);
+    return completer.future;
   }
 
   @override
