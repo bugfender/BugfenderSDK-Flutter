@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html' as html;
 import 'dart:js';
 import 'dart:js_util';
 
@@ -55,6 +56,38 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
     if (build != null) {
       options['build'] = build;
     }
+    return _initWithMap(options);
+  }
+
+  Future<void> _loadJSLibrary() async {
+    JsObject? bf = context['Bugfender'];
+    if (bf != null) {
+      // Bugfender is already loaded, nothing to do
+      print(
+          'Bugfender: <script src="https://js.bugfender.com/bugfender-v2.js"></script> is no longer necessary in index.html');
+      return Future.value();
+    }
+
+    final head = html.querySelector('head');
+    if (head == null) {
+      return Future.error('could not load Bugfender JS SDK (missing <head>)');
+    }
+    final html.ScriptElement script = html.ScriptElement()
+      ..type = "text/javascript"
+      ..charset = "utf-8"
+      ..defer = true
+      ..src = './assets/packages/flutter_bugfender/assets/bugfender.js';
+    head.children.add(script);
+
+    // wait for the script to load
+    final completer = new Completer<void>();
+    script.addEventListener('load', (event) => {completer.complete()});
+    return completer.future;
+  }
+
+  Future<void> _initWithMap(Map<String, Object> options) async {
+    // load the JS library
+    await _loadJSLibrary();
 
     // call Bugfender.init(options)
     JsObject jsPromise =

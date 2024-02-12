@@ -12,7 +12,7 @@ Edit `pubspec.yaml` and add add `flutter_bugfender` to `dependencies`:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_bugfender: ^2.2.0
+  flutter_bugfender: ^2.3.0
 ```
 
 Then run `flutter pub get` (or ‘Packages Get’ in IntelliJ) to download the package.
@@ -97,7 +97,15 @@ runZonedGuarded(() {
 });
 ````
 
-### Using this package in a web project
-The plugin assumes the Bugfender JS library is already loaded. You may load it by adding the following snippet to your `index.html` file:
+# Contributing
+## Updating the embedded web library
+This library contains a copy of the Bugfender Web SDK, so this library to be loaded without network usage 
+and with consistent behavior, at the expense that when the Web SDK changes, we must update the local copy.
 
-    <script defer src="https://js.bugfender.com/bugfender-v2.js"></script>
+To update it, type:
+
+```sh
+curl https://js.bugfender.com/bugfender-v2.js -o assets/bugfender.js
+```
+
+This is not necessary for iOS and Android, because CocoaPods/Gradle dependency management is integrated.
