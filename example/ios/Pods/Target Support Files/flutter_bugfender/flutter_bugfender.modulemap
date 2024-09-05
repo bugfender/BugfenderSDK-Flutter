@@ -1,6 +1,0 @@
-framework module flutter_bugfender {
-  umbrella header "flutter_bugfender-umbrella.h"
-
-  export *
-  module * { export * }
-}
