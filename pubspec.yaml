@@ -1,6 +1,6 @@
 name: flutter_bugfender
 description: Flutter plugin to enable Bugfender reporting (iOS, Android and web support).
-version: 2.3.0
+version: 3.0.0+1
 homepage: https://bugfender.com
 repository: https://github.com/bugfender/BugfenderSDK-Flutter
 

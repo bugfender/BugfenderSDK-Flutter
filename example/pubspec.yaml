@@ -1,5 +1,6 @@
 name: flutter_bugfender_example
 description: Demonstrates how to use the flutter_bugfender plugin.
+version: 1.0.0+1
 
 environment:
   sdk: '>=2.12.0 <4.0.0'

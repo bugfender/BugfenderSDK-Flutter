@@ -1,11 +1,11 @@
-Bugfender SDK for iOS [![Build Status](https://travis-ci.com/bugfender/BugfenderSDK-iOS.svg?branch=master)](https://travis-ci.com/bugfender/BugfenderSDK-iOS) [![Docs](https://img.shields.io/badge/docs-%E2%9C%93-blue.svg)](https://bugfender.github.io/BugfenderSDK-iOS/)
+Bugfender SDK for iOS [![Docs](https://img.shields.io/badge/docs-%E2%9C%93-blue.svg)](https://bugfender.github.io/BugfenderSDK-iOS/)
 ===================
 
 Bugfender is a cloud service to collect mobile application logs. Developers can control log sending programmatically and manually for each device. Logs are available at the [Bugfender dashboard](https://dashboard.bugfender.com/). You'll need an account.
 
 Supported iOS versions:
- * BugfenderSDK 1.11 works for iOS 11.0 and newer.
- * For iOS 10 support you can use BugfenderSDK 1.10.5.
+ * BugfenderSDK 1.12 works for iOS 11.0 and newer.
+ * For iOS 10 support you can use BugfenderSDK 1.10.6.
  * For iOS 8 support you can use BugfenderSDK 1.8.
 
 # Installing the SDK
@@ -16,35 +16,34 @@ First of all you will need to add the framework to your project.
 1. Create a Podfile if you don't have one: `pod init`
 2. Add Bugfender to your Podfile:
    ```
-   pod 'BugfenderSDK', '~> 1.11'
+   pod 'BugfenderSDK', '~> 1.12'
    ```
 3. Save the file and run: `pod install`. This creates an `.xcworkspace` file for your app. Use this file for all future development on your application.
 
 ## Using Swift Package Manager
 
-1. In Xcode go to the target's `General` tab and press on the icon to add a new library <img src="https://github.com/bugfender/BugfenderSDK-iOS/blob/master/readme-images/spm/spm1.png?raw=true" width="400" >
+1. In Xcode go to the target's `General` tab and press on the icon to add a new library
+![](readme-images/spm/spm1.png)
 
 2. In the popover choose `Add Other` and then `Add Package Dependency...`
-<img src="https://github.com/bugfender/BugfenderSDK-iOS/blob/master/readme-images/spm/spm2.png?raw=true" width="300" >
+![](readme-images/spm/spm2.png)
 
 3. Paste the GitHub url from the Bugfender iOS repository `https://github.com/bugfender/BugfenderSDK-iOS` in the textfield and press `Next`
-<img src="https://github.com/bugfender/BugfenderSDK-iOS/blob/master/readme-images/spm/spm3.png?raw=true" width="400" >
+![](readme-images/spm/spm3.png)
 
 4. Leave the first option checked and press `Next`
-<img src="https://github.com/bugfender/BugfenderSDK-iOS/blob/master/readme-images/spm/spm4.png?raw=true" width="400" >
+![](readme-images/spm/spm4.png)
 
 5. Xcode will download the Bugfender files and you will be prompted with the following menu. Ensure BugfenderSDK is selected and press Finish
-<img src="https://github.com/bugfender/BugfenderSDK-iOS/blob/master/readme-images/spm/spm5.png?raw=true" width="400" >
+![](readme-images/spm/spm5.png)
 
 6. Import `SystemConfiguration.framework`, `Security.framework`, `CoreServices.framework`, `CoreGraphics.framework` and `libc++.tbd` as well.
-
-*There is a [known issue](https://bugs.swift.org/browse/SR-13343) in Xcode12 failing to launch apps in a physical device when debugging. At the moment of writing this docs, the issue is still not fixed in Xcode12.3 Beta. The issue should not affect release or simulator versions. But, if you get a `No code signature found` or `A valid provisioning profile for this executable was not found` we recommend to use the [workaround proposed by the PSPDFKit](https://pspdfkit.com/guides/ios/current/knowledge-base/library-not-found-swiftpm/) team.*
 
 ## Using Carthage
 1. Update to at least Carthage 0.38.0
 2. Add to your Cartfile:
    ```
-   github "bugfender/BugfenderSDK-iOS" ~>1.11
+   github "bugfender/BugfenderSDK-iOS" ~>1.12
    ```
 3. Save the file and run `carthage update --use-xcframeworks`
 4. Import `Carthage/Build/BugfenderSDK.xcframework` to your `Linked Frameworks and Libraries` (or drag-n-drop the file to your project).
@@ -58,34 +57,6 @@ If you prefer to install the SDK manually you can use the provided xcframework i
 1. Go to your **Project** > **Your Target** > **General** > **Frameworks, Libraries, and Embedded Content** and drag `BugfenderSDK.xcframework` there.
 2. Make sure to select the option "Embed framework"
 3. Make sure you have `SystemConfiguration.framework`, `Security.framework`, `CoreServices.framework`, `CoreGraphics.framework` and `libc++.tbd` there as well.
-
-# Symbolicating crash reports
-Bugfender provides a script is able to upload dSYM bundles to [Bugfender](https://bugfender.com).
-
-## Obtain the script
-If you are uising CocoaPods the script is already distributed with the Pod from version 1.10.4
-
-If you are using any other installation method you can download [the script](https://raw.githubusercontent.com/bugfender/BugfenderSDK-iOS/feature/upload-symbols-podspec/xcode-upload-symbols/upload-symbols.sh) and copy it into a location inside your project.
-
-## Set up Xcode to automatically upload dSYM bundles
-For that we need to create a new Run Script on our Build Phases following this steps:
-* Go to your App settings.
-* Select your main target from the *TARGETS* list on the left.
-* Go to *Build Phases* tab.
-* Open menu under the `+` sign and select *New Run Script Phase*.
-* Under the shell portion of *Run Script* add a script call to the script.
-    * If you are using CocoaPods:
-      ```sh
-      ${PODS_ROOT}/BugfenderSDK/upload-symbols.sh <bugfender_symbolication_token>
-      ```   
-    * If you copied the script manually:
-      ```sh
-      <path_to_the_script>/upload-symbols.sh <bugfender_symbolication_token>
-      ```   
-* The **bugfender symbolication token** can be obtained from the Bugfender Dashboard and needs to be specified either as a first argument to the script or setting the `BUGFENDER_SYMBOLICATION_TOKEN` environment variable.
-* Done!
-
-![XCode Build Phases](/xcode-upload-symbols/xcode.png)
 
 
 # Using Bugfender
@@ -127,6 +98,7 @@ And add the following to `application(_:didFinishLaunchingWithOptions:)`:
 
 ```Swift
 Bugfender.activateLogger("YOUR_APP_KEY")
+Bugfender.enableNSLogLogging() // optional, capture logs printed to console automatically
 Bugfender.enableUIEventLogging() // optional, log user interactions automatically
 Bugfender.enableCrashReporting() // optional, log crashes automatically
 bfprint("Hello world!") // use bfprint() as you would use print()
@@ -156,6 +128,7 @@ Get an API key from the [Bugfender console](https://app.bugfender.com/). In your
     ...
     // Activate the remote logger with an App Key.
     [Bugfender activateLogger:@"YOUR_APP_KEY"];
+    [Bugfender enableNSLogLogging]; // optional, capture logs printed to console automatically
     [Bugfender enableUIEventLogging]; // optional, log user interactions automatically
     [Bugfender enableCrashReporting]; // optional, log crashes automatically
     BFLog("Hello world!") // use BFLog as you would use NSLog
@@ -163,13 +136,16 @@ Get an API key from the [Bugfender console](https://app.bugfender.com/). In your
 }
 ```
 
-Then you may use `BFLog` as you would normally use `NSLog`.
+You may use `BFLog` as you would normally use `NSLog`.
 
 You may also want to specify a logging level by using the following macros:
 
-- `BFLog(...)`: Default log.
-- `BFLogWarn(...)`: Warning log.
+- `BFLogFatal(...)`: Fatal log.
 - `BFLogErr(...)`: Error log.
+- `BFLogWarn(...)`: Warning log.
+- `BFLogInfo(...)`: Info log.
+- `BFLog(...)`: Default (debug) log.
+- `BFLogTrace(...)`: Trace log.
 
 # Advanced features
 
@@ -242,7 +218,7 @@ Starting from version 1.6, Bugfender provides a new feature to easily collect ap
 
 The easiest way to implement Bugfender User Feedback is using the customizable User Feedback View Controller. It provides a convenient view controller with two text fields, one short for the subject and another bigger for the feedback. Both text fields grow autommatically.
 
-## Using default UI
+## Using the default UI
 
 Using the convenient UI provided by Bugfender requires only creating a new View Controller and presenting it modally. All you need is to call the following method and complete the required parameters with the title and placeholders for your UI.
 
@@ -287,6 +263,60 @@ feedbackViewController.hintFont = UIFont(name: "Avenir", size: 14)!
 
 For a complete list of customizable attributes you can inspect "BFUserFeedbackViewController.h" or [read the docs](http://bugfender.github.io/BugfenderSDK-iOS/).
 
+## Using SwiftUI
+
+Here is an example using the `BFUserFeedbackNavigationController` in SwiftUI:
+
+```swift
+struct SwiftUIView: View {
+    @State private var showFeedbackScreen = false
+
+    var body: some View {
+        VStack {
+            Text("Hello World!")
+            Button("Show Feedback screen") {
+                showFeedbackScreen = true
+            }
+        }.sheet(isPresented: $showFeedbackScreen) {
+            FeedbackView() { sent, feedbackUrl in
+                if sent == true,
+                    let url = feedbackUrl{
+                    BFLog("Sent feedback to URL: \(url.absoluteString)")
+                } else {
+                    BFLog("User rejected to send feedback")
+                }
+            }
+        }.navigationBarTitle(Text("Swift UI Test"))
+    }
+}
+
+struct SwiftUIView_Previews: PreviewProvider {
+    static var previews: some View {
+        SwiftUIView()
+    }
+}
+
+struct FeedbackView: UIViewControllerRepresentable {
+    typealias UIViewControllerType = BFUserFeedbackNavigationController
+
+    let completion: (_ feedbackSent: Bool, _ feedbackUrl: URL?) -> Void
+
+    func makeUIViewController(context: Context) -> BFUserFeedbackNavigationController {
+        BFUserFeedbackNavigationController.userFeedbackViewController(
+            withTitle: "This title",
+            hint: "This hint",
+            subjectPlaceholder: "This subject",
+            messagePlaceholder: "This message",
+            sendButtonTitle: "Send",
+            cancelButtonTitle: "Cancel") { sent, feedbackUrl in
+                completion(sent, feedbackUrl)
+            }
+    }
+
+    func updateUIViewController(_ uiViewController: BFUserFeedbackNavigationController, context: Context) {}
+}
+```
+
 ## Using a custom UI
 
 If you need further customization than provided by BFUserFeedbackViewController you can implement your own UI. All you have to do is collect your user feedback as you wish and send it to Bugfender using `sendUserFeedback`:
@@ -300,3 +330,14 @@ The returned URL is a direct link to the Bugfender's dashboard. Use it to create
 
 BugfenderSDK is now a dynamic framework and you will need to check the "embed framework" option when adding it to your project manually or using Carthage.
 <br /> Additionally, the Bugfender.swift helper class is not needed anymore and can be safely deleted, however, Swift must be available in your project. If you are installing Bugfender manually or using Carthage ensure that *Build Settings -> Always Embed Swift Standard Libraries* is set to *YES*.
+
+# Symbolicating crash reports
+Bugfender provides a script is able to upload dSYM bundles to [Bugfender](https://bugfender.com).
+
+## Obtain the script
+The script is distributed if you are using Cocoapods or Swift Package Manager.
+
+If you are using any other installation method you can download [the script](https://raw.githubusercontent.com/bugfender/BugfenderSDK-iOS/master/xcode-upload-symbols/upload-symbols.sh) and copy it into a location inside your project.
+
+## Set up Xcode to automatically upload dSYM bundles
+Use the [following instructions](https://github.com/bugfender/BugfenderSDK-iOS/blob/master/xcode-upload-symbols/README.md) to configure your project.

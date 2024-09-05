@@ -1,3 +1,6 @@
+## [3.0.0] - Bye bye Bitcode
+* update Bugfender SDK for iOS to version 2.0.0. Removes bitcode.
+
 ## [2.3.0]
 * Update: On web, loading the `<script src="https://js.bugfender.com/bugfender-v2.js"></script>` script in the `index.html` page is no longer necessary.
 
