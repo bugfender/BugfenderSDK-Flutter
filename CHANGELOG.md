@@ -1,3 +1,6 @@
+## [3.1.0]
+* Update: Bump js to 0.7.1
+
 ## [3.0.0] - Bye bye Bitcode
 * update Bugfender SDK for iOS to version 2.0.0. Removes bitcode.
 
