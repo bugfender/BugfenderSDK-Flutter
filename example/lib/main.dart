@@ -3,12 +3,14 @@ import 'package:flutter_bugfender/flutter_bugfender.dart';
 
 void main() {
   FlutterBugfender.handleUncaughtErrors(() async {
-    await FlutterBugfender.init("<INSERT YOUR BUGFENDER APP KEY>",
-        printToConsole: true,
-        enableCrashReporting: true,
-        enableAndroidLogcatLogging: false,
-        version: "1.0",
-        build: "555");
+    await FlutterBugfender.init(
+      "<INSERT YOUR BUGFENDER APP KEY>",
+      printToConsole: true,
+      enableCrashReporting: true,
+      enableAndroidLogcatLogging: false,
+      version: "1.0",
+      build: "555",
+    );
     FlutterBugfender.log("hello world!");
     runApp(new MyApp());
   });
@@ -38,12 +40,13 @@ class _MyAppState extends State<MyApp> {
       FlutterBugfender.debug("Debug sent!");
       FlutterBugfender.trace("Trace sent!");
       FlutterBugfender.sendLog(
-          line: 42,
-          method: "fakeMethod()",
-          file: "fakeFile.fake",
-          level: LogLevel.info,
-          tag: "TAG",
-          text: "Custom log 1");
+        line: 42,
+        method: "fakeMethod()",
+        file: "fakeFile.fake",
+        level: LogLevel.info,
+        tag: "TAG",
+        text: "Custom log 1",
+      );
 
       FlutterBugfender.sendLog(tag: "TAG", text: "Custom log 2");
       FlutterBugfender.setDeviceString("user.email", "example@example.com");
@@ -52,10 +55,18 @@ class _MyAppState extends State<MyApp> {
       FlutterBugfender.setDeviceBool("user.team", true);
       FlutterBugfender.removeDeviceKey("user.team");
       print(await FlutterBugfender.sendCrash("Test Crash", "Stacktrace here!"));
-      print(await FlutterBugfender.sendIssue(
-          "Test Issue", "Issue value goes here!"));
-      print(await FlutterBugfender.sendUserFeedback(
-          "Test user feedback", "User feedback details here!"));
+      print(
+        await FlutterBugfender.sendIssue(
+          "Test Issue",
+          "Issue value goes here!",
+        ),
+      );
+      print(
+        await FlutterBugfender.sendUserFeedback(
+          "Test user feedback",
+          "User feedback details here!",
+        ),
+      );
       FlutterBugfender.setForceEnabled(true);
       FlutterBugfender.setForceEnabled(false);
       FlutterBugfender.forceSendOnce();
@@ -78,7 +89,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   generateException() async {
-    var result = 100 ~/ 0;
+    var _ = 100 ~/ 0;
   }
 
   generateError() {
@@ -89,9 +100,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return new MaterialApp(
       home: new Scaffold(
-        appBar: new AppBar(
-          title: new Text('Bugfender Plugin example app'),
-        ),
+        appBar: new AppBar(title: new Text('Bugfender Plugin example app')),
         body: new Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -115,7 +124,7 @@ class _MyAppState extends State<MyApp> {
                   generateError();
                 },
                 child: Text('Generate error'),
-              )
+              ),
             ],
           ),
         ),

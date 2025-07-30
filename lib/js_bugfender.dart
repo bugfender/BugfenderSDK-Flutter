@@ -1,36 +1,32 @@
-@JS()
-library bugfender;
+import 'dart:js_interop';
 
-import 'package:js/js.dart';
-
-// init: proxying and automatic conversion doesn't work because the options object can have a variable number of keys
-
+// External function declarations
 @JS('Bugfender.setDeviceKey')
-external void setDeviceKey(String key, dynamic value);
+external void setDeviceKey(String key, JSAny value);
 
 @JS('Bugfender.removeDeviceKey')
 external void removeDeviceKey(String key);
 
 @JS('Bugfender.sendCrash')
-external String sendCrash(String title, String stacktrace);
+external JSPromise<JSString> sendCrash(String title, String stacktrace);
 
 @JS('Bugfender.sendIssue')
-external String sendIssue(String title, String text);
+external JSPromise<JSString> sendIssue(String title, String text);
 
 @JS('Bugfender.sendUserFeedback')
-external String sendUserFeedback(String title, String markdown);
+external JSPromise<JSString> sendUserFeedback(String title, String markdown);
 
 @JS('Bugfender.setForceEnabled')
-external setForceEnabled(bool enabled);
+external void setForceEnabled(bool enabled);
 
 @JS('Bugfender.getDeviceURL')
-external String getDeviceURL();
+external JSPromise<JSString> getDeviceURL();
 
 @JS('Bugfender.getSessionURL')
-external String getSessionURL();
+external JSPromise<JSString> getSessionURL();
 
 @JS('Bugfender.sendLog')
-external sendLog(LogEntry logEntry);
+external void sendLog(LogEntry logEntry);
 
 @JS('Bugfender.trace')
 external void trace(String log);
@@ -54,26 +50,11 @@ external void fatal(String log);
 external void forceSendOnce();
 
 @JS('Bugfender.getUserFeedback')
-external UserFeedbackResult getUserFeedback(
+external JSPromise<UserFeedbackResult> getUserFeedback(
     UserFeedbackOptions userFeedbackOptions);
 
-@JS()
-@anonymous
-class LogEntry {
-  external int get line;
-
-  external int get level;
-
-  external String get tag;
-
-  external String get method;
-
-  external String get file;
-
-  external String get text;
-
-  external String get url;
-
+// Extension types for interop objects
+extension type LogEntry._(JSObject _) implements JSObject {
   external factory LogEntry({
     int line,
     int level,
@@ -83,17 +64,17 @@ class LogEntry {
     String text,
     String url,
   });
+  
+  external int get line;
+  external int get level;
+  external String get tag;
+  external String get method;
+  external String get file;
+  external String get text;
+  external String get url;
 }
 
-@JS()
-@anonymous
-class UserFeedbackOptions {
-  external String? get title;
-  external String? get hint;
-  external String? get subjectPlaceholder;
-  external String? get feedbackPlaceholder;
-  external String? get submitLabel;
-
+extension type UserFeedbackOptions._(JSObject _) implements JSObject {
   external factory UserFeedbackOptions({
     String? title,
     String? hint,
@@ -101,10 +82,15 @@ class UserFeedbackOptions {
     String? feedbackPlaceholder,
     String? submitLabel,
   });
+  
+  external String? get title;
+  external String? get hint;
+  external String? get subjectPlaceholder;
+  external String? get feedbackPlaceholder;
+  external String? get submitLabel;
 }
 
-@JS()
-class UserFeedbackResult {
+extension type UserFeedbackResult._(JSObject _) implements JSObject {
   external bool get isSent;
   external String? get feedbackURL;
 }
