@@ -1,184 +1,83 @@
 import 'dart:js_interop';
-import 'dart:js_interop_unsafe';
 
-// init: proxying and automatic conversion doesn't work because the options object can have a variable number of keys
+// External function declarations
+@JS('Bugfender.setDeviceKey')
+external void setDeviceKey(String key, JSAny value);
 
-@JS('Bugfender')
-external JSObject get _bugfender;
+@JS('Bugfender.removeDeviceKey')
+external void removeDeviceKey(String key);
 
-extension BugfenderExtension on JSObject {
-  void setDeviceKey(String key, JSAny value) {
-    jsObjectCallMethod(this, 'setDeviceKey'.toJS, [key.toJS, value].toJS);
-  }
+@JS('Bugfender.sendCrash')
+external JSPromise<JSString> sendCrash(String title, String stacktrace);
 
-  void removeDeviceKey(String key) {
-    jsObjectCallMethod(this, 'removeDeviceKey'.toJS, key.toJS);
-  }
+@JS('Bugfender.sendIssue')
+external JSPromise<JSString> sendIssue(String title, String text);
 
-  JSAny sendCrash(String title, String stacktrace) {
-    return jsObjectCallMethod(this, 'sendCrash'.toJS, [title.toJS, stacktrace.toJS].toJS);
-  }
+@JS('Bugfender.sendUserFeedback')
+external JSPromise<JSString> sendUserFeedback(String title, String markdown);
 
-  JSAny sendIssue(String title, String text) {
-    return jsObjectCallMethod(this, 'sendIssue'.toJS, [title.toJS, text.toJS].toJS);
-  }
+@JS('Bugfender.setForceEnabled')
+external void setForceEnabled(bool enabled);
 
-  JSAny sendUserFeedback(String title, String markdown) {
-    return jsObjectCallMethod(this, 'sendUserFeedback'.toJS, [title.toJS, markdown.toJS].toJS);
-  }
+@JS('Bugfender.setSDKType')
+external void setSDKType(String sdkName, String sdkVersion);
 
-  void setForceEnabled(bool enabled) {
-    jsObjectCallMethod(this, 'setForceEnabled'.toJS, enabled.toJS);
-  }
+@JS('Bugfender.getDeviceURL')
+external JSPromise<JSString> getDeviceURL();
 
-  void setSDKType(String sdkName, String sdkVersion) {
-    jsObjectCallMethod(this, 'setSDKType'.toJS, [sdkName.toJS, sdkVersion.toJS].toJS);
-  }
+@JS('Bugfender.getSessionURL')
+external JSPromise<JSString> getSessionURL();
 
-  JSAny getDeviceURL() {
-    return jsObjectCallMethod(this, 'getDeviceURL'.toJS, null);
-  }
+@JS('Bugfender.sendLog')
+external void sendLog(LogEntry logEntry);
 
-  JSAny getSessionURL() {
-    return jsObjectCallMethod(this, 'getSessionURL'.toJS, null);
-  }
+@JS('Bugfender.trace')
+external void trace(String log);
 
-  void sendLog(LogEntry logEntry) {
-    jsObjectCallMethod(this, 'sendLog'.toJS, logEntry);
-  }
+@JS('Bugfender.info')
+external void info(String log);
 
-  void trace(String log) {
-    jsObjectCallMethod(this, 'trace'.toJS, log.toJS);
-  }
+@JS('Bugfender.log')
+external void log(String log);
 
-  void info(String log) {
-    jsObjectCallMethod(this, 'info'.toJS, log.toJS);
-  }
+@JS('Bugfender.warn')
+external void warn(String log);
 
-  void log(String log) {
-    jsObjectCallMethod(this, 'log'.toJS, log.toJS);
-  }
+@JS('Bugfender.error')
+external void error(String log);
 
-  void warn(String log) {
-    jsObjectCallMethod(this, 'warn'.toJS, log.toJS);
-  }
+@JS('Bugfender.fatal')
+external void fatal(String log);
 
-  void error(String log) {
-    jsObjectCallMethod(this, 'error'.toJS, log.toJS);
-  }
+@JS('Bugfender.forceSendOnce')
+external void forceSendOnce();
 
-  void fatal(String log) {
-    jsObjectCallMethod(this, 'fatal'.toJS, log.toJS);
-  }
+@JS('Bugfender.getUserFeedback')
+external JSPromise<UserFeedbackResult> getUserFeedback(
+    UserFeedbackOptions userFeedbackOptions);
 
-  void forceSendOnce() {
-    jsObjectCallMethod(this, 'forceSendOnce'.toJS, null);
-  }
-
-  UserFeedbackResult getUserFeedback(UserFeedbackOptions options) {
-    return jsObjectCallMethod(this, 'getUserFeedback'.toJS, options) as UserFeedbackResult;
-  }
-}
-
-void setDeviceKey(String key, dynamic value) {
-  _bugfender.setDeviceKey(key, value.toJS);
-}
-
-void removeDeviceKey(String key) {
-  _bugfender.removeDeviceKey(key);
-}
-
-JSAny sendCrash(String title, String stacktrace) {
-  return _bugfender.sendCrash(title, stacktrace);
-}
-
-JSAny sendIssue(String title, String text) {
-  return _bugfender.sendIssue(title, text);
-}
-
-JSAny sendUserFeedback(String title, String markdown) {
-  return _bugfender.sendUserFeedback(title, markdown);
-}
-
-void setForceEnabled(bool enabled) {
-  _bugfender.setForceEnabled(enabled);
-}
-
-void setSDKType(String sdkName, String sdkVersion) {
-  _bugfender.setSDKType(sdkName, sdkVersion);
-}
-
-JSAny getDeviceURL() {
-  return _bugfender.getDeviceURL();
-}
-
-JSAny getSessionURL() {
-  return _bugfender.getSessionURL();
-}
-
-void sendLog(LogEntry logEntry) {
-  _bugfender.sendLog(logEntry);
-}
-
-void trace(String log) {
-  _bugfender.trace(log);
-}
-
-void info(String log) {
-  _bugfender.info(log);
-}
-
-void log(String log) {
-  _bugfender.log(log);
-}
-
-void warn(String log) {
-  _bugfender.warn(log);
-}
-
-void error(String log) {
-  _bugfender.error(log);
-}
-
-void fatal(String log) {
-  _bugfender.fatal(log);
-}
-
-void forceSendOnce() {
-  _bugfender.forceSendOnce();
-}
-
-UserFeedbackResult getUserFeedback(UserFeedbackOptions options) {
-  return _bugfender.getUserFeedback(options);
-}
-
-@JS()
-@staticInterop
-class LogEntry implements JSObject {
+// Extension types for interop objects
+extension type LogEntry._(JSObject _) implements JSObject {
   external factory LogEntry({
-    int? line,
-    int? level,
-    String? tag,
-    String? method,
-    String? file,
-    String? text,
-    String? url,
+    int line,
+    int level,
+    String tag,
+    String method,
+    String file,
+    String text,
+    String url,
   });
+  
+  external int get line;
+  external int get level;
+  external String get tag;
+  external String get method;
+  external String get file;
+  external String get text;
+  external String get url;
 }
 
-extension LogEntryExtension on LogEntry {
-  int get line => jsObjectGetProperty(this, 'line'.toJS) as int;
-  int get level => jsObjectGetProperty(this, 'level'.toJS) as int;
-  String get tag => (jsObjectGetProperty(this, 'tag'.toJS) as JSString).toDart;
-  String get method => (jsObjectGetProperty(this, 'method'.toJS) as JSString).toDart;
-  String get file => (jsObjectGetProperty(this, 'file'.toJS) as JSString).toDart;
-  String get text => (jsObjectGetProperty(this, 'text'.toJS) as JSString).toDart;
-  String get url => (jsObjectGetProperty(this, 'url'.toJS) as JSString).toDart;
-}
-
-@JS()
-@staticInterop
-class UserFeedbackOptions implements JSObject {
+extension type UserFeedbackOptions._(JSObject _) implements JSObject {
   external factory UserFeedbackOptions({
     String? title,
     String? hint,
@@ -186,23 +85,15 @@ class UserFeedbackOptions implements JSObject {
     String? feedbackPlaceholder,
     String? submitLabel,
   });
+  
+  external String? get title;
+  external String? get hint;
+  external String? get subjectPlaceholder;
+  external String? get feedbackPlaceholder;
+  external String? get submitLabel;
 }
 
-extension UserFeedbackOptionsExtension on UserFeedbackOptions {
-  String? get title => (jsObjectGetProperty(this, 'title'.toJS) as JSString?)?.toDart;
-  String? get hint => (jsObjectGetProperty(this, 'hint'.toJS) as JSString?)?.toDart;
-  String? get subjectPlaceholder => (jsObjectGetProperty(this, 'subjectPlaceholder'.toJS) as JSString?)?.toDart;
-  String? get feedbackPlaceholder => (jsObjectGetProperty(this, 'feedbackPlaceholder'.toJS) as JSString?)?.toDart;
-  String? get submitLabel => (jsObjectGetProperty(this, 'submitLabel'.toJS) as JSString?)?.toDart;
-}
-
-@JS()
-@staticInterop
-class UserFeedbackResult implements JSObject {
-  external factory UserFeedbackResult();
-}
-
-extension UserFeedbackResultExtension on UserFeedbackResult {
-  bool get isSent => jsObjectGetProperty(this, 'isSent'.toJS) as bool;
-  String? get feedbackURL => (jsObjectGetProperty(this, 'feedbackURL'.toJS) as JSString?)?.toDart;
+extension type UserFeedbackResult._(JSObject _) implements JSObject {
+  external bool get isSent;
+  external String? get feedbackURL;
 }
