@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:html' as html;
-import 'dart:js';
-import 'dart:js_util';
+import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:web/web.dart' as web;
 
 import 'flutter_bugfender.dart';
 import 'js_bugfender.dart' as bugfender_web;
@@ -60,28 +60,29 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
   }
 
   Future<void> _loadJSLibrary() async {
-    JsObject? bf = context['Bugfender'];
-    if (bf != null) {
+    final globalThis = web.window.globalThis;
+    final bugfender = (globalThis as JSObject)['Bugfender'.toJS];
+    if (bugfender != null && bugfender.isA<JSObject>()) {
       // Bugfender is already loaded, nothing to do
       print(
           'Bugfender: <script src="https://js.bugfender.com/bugfender-v2.js"></script> is no longer necessary in index.html');
       return Future.value();
     }
 
-    final head = html.querySelector('head');
+    final head = web.document.querySelector('head');
     if (head == null) {
       return Future.error('could not load Bugfender JS SDK (missing <head>)');
     }
-    final html.ScriptElement script = html.ScriptElement()
-      ..type = "text/javascript"
-      ..charset = "utf-8"
-      ..defer = true
-      ..src = './assets/packages/flutter_bugfender/assets/bugfender.js';
-    head.children.add(script);
+    final script = web.HTMLScriptElement();
+    script.type = "text/javascript";
+    script.charset = "utf-8";
+    script.defer = true;
+    script.src = './assets/packages/flutter_bugfender/assets/bugfender.js';
+    head.appendChild(script);
 
     // wait for the script to load
     final completer = new Completer<void>();
-    script.addEventListener('load', (event) => {completer.complete()});
+    script.addEventListener('load', ((web.Event event) => completer.complete()).toJS);
     return completer.future;
   }
 
@@ -90,16 +91,39 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
     await _loadJSLibrary();
 
     // call Bugfender.init(options)
-    JsObject jsPromise =
-        context['Bugfender'].callMethod('init', [JsObject.jsify(options)]);
+    final globalThis = web.window.globalThis;
+    final bugfender = (globalThis as JSObject)['Bugfender'.toJS] as JSObject;
+    final jsOptions = _mapToJSObject(options);
+    final jsPromise = bugfender.callMethod('init'.toJS, [jsOptions]) as JSObject;
 
     // convert the JS Promise to a Dart Future
     final completer = new Completer<void>();
-    jsPromise.callMethod('then', [
-      allowInterop(completer.complete),
-      allowInterop(completer.completeError)
+    jsPromise.callMethod('then'.toJS, [
+      (() => completer.complete()).toJS,
+      ((Object error) => completer.completeError(error)).toJS,
     ]);
     return completer.future;
+  }
+
+  JSObject _mapToJSObject(Map<String, Object> map) {
+    // Create a JS object using Object() constructor
+    final obj = (web.window.globalThis as JSObject).callMethod('Object'.toJS, []) as JSObject;
+    map.forEach((key, value) {
+      obj[key.toJS] = _toJSAny(value);
+    });
+    return obj;
+  }
+
+  JSAny _toJSAny(Object value) {
+    if (value is String) {
+      return value.toJS;
+    } else if (value is bool) {
+      return value.toJS;
+    } else if (value is num) {
+      return value.toJS;
+    } else {
+      return value.toString().toJS;
+    }
   }
 
   @override
@@ -129,25 +153,25 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
 
   @override
   Future<Uri> sendCrash(String title, String stacktrace) async {
-    return promiseToFuture(bugfender_web.sendCrash(title, stacktrace))
+    return _promiseToFuture<String>(bugfender_web.sendCrash(title, stacktrace))
         .then((value) => Uri.parse(value));
   }
 
   @override
   Future<Uri> sendIssue(String title, String text) async {
-    return promiseToFuture(bugfender_web.sendIssue(title, text))
+    return _promiseToFuture<String>(bugfender_web.sendIssue(title, text))
         .then((value) => Uri.parse(value));
   }
 
   @override
   Future<Uri> sendIssueMarkdown(String title, String markdown) async {
-    return promiseToFuture(bugfender_web.sendIssue(title, markdown))
+    return _promiseToFuture<String>(bugfender_web.sendIssue(title, markdown))
         .then((value) => Uri.parse(value));
   }
 
   @override
   Future<Uri> sendUserFeedback(String title, String text) async {
-    return promiseToFuture(bugfender_web.sendUserFeedback(title, text))
+    return _promiseToFuture<String>(bugfender_web.sendUserFeedback(title, text))
         .then((value) => Uri.parse(value));
   }
 
@@ -157,19 +181,24 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
   }
 
   @override
+  Future<void> setSDKType(String sdkName, String sdkVersion) async {
+    bugfender_web.setSDKType(sdkName, sdkVersion);
+  }
+
+  @override
   Future<void> forceSendOnce() async {
     bugfender_web.forceSendOnce();
   }
 
   @override
   Future<Uri> getDeviceUri() async {
-    return promiseToFuture(bugfender_web.getDeviceURL())
+    return _promiseToFuture<String>(bugfender_web.getDeviceURL())
         .then((value) => Uri.parse(value));
   }
 
   @override
   Future<Uri> getSessionUri() async {
-    return promiseToFuture(bugfender_web.getSessionURL())
+    return _promiseToFuture<String>(bugfender_web.getSessionURL())
         .then((value) => Uri.parse(value));
   }
 
@@ -250,7 +279,7 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
       String messageHint = "Your feedback…",
       String sendButtonText = "Send",
       String cancelButtonText = "Close"}) {
-    return promiseToFuture(
+    return _promiseToFuture<bugfender_web.UserFeedbackResult>(
         bugfender_web.getUserFeedback(bugfender_web.UserFeedbackOptions(
       title: title,
       hint: hint,
@@ -258,12 +287,29 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
       feedbackPlaceholder: messageHint,
       submitLabel: sendButtonText,
     ))).then((value) {
-      var result = (value as bugfender_web.UserFeedbackResult);
+      var result = value;
       if (result.isSent) {
         return Uri.parse(result.feedbackURL!);
       } else {
         return null;
       }
     });
+  }
+
+  Future<T> _promiseToFuture<T>(JSAny promise) async {
+    final completer = Completer<T>();
+    (promise as JSObject).callMethod('then'.toJS, [
+      ((JSAny value) {
+        if (T == String && value is JSString) {
+          completer.complete((value as JSString).toDart as T);
+        } else if (T == bugfender_web.UserFeedbackResult && value is bugfender_web.UserFeedbackResult) {
+          completer.complete(value as T);
+        } else {
+          completer.complete(value as T);
+        }
+      }).toJS,
+      ((Object error) => completer.completeError(error)).toJS,
+    ]);
+    return completer.future;
   }
 }
