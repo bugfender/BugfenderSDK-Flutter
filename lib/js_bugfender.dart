@@ -1,4 +1,5 @@
 import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 
 // init: proxying and automatic conversion doesn't work because the options object can have a variable number of keys
 
@@ -7,75 +8,75 @@ external JSObject get _bugfender;
 
 extension BugfenderExtension on JSObject {
   void setDeviceKey(String key, JSAny value) {
-    (this as JSObject).callMethod('setDeviceKey'.toJS, [key.toJS, value]);
+    jsObjectCallMethod(this, 'setDeviceKey'.toJS, [key.toJS, value].toJS);
   }
 
   void removeDeviceKey(String key) {
-    (this as JSObject).callMethod('removeDeviceKey'.toJS, [key.toJS]);
+    jsObjectCallMethod(this, 'removeDeviceKey'.toJS, key.toJS);
   }
 
   JSAny sendCrash(String title, String stacktrace) {
-    return (this as JSObject).callMethod('sendCrash'.toJS, [title.toJS, stacktrace.toJS]);
+    return jsObjectCallMethod(this, 'sendCrash'.toJS, [title.toJS, stacktrace.toJS].toJS);
   }
 
   JSAny sendIssue(String title, String text) {
-    return (this as JSObject).callMethod('sendIssue'.toJS, [title.toJS, text.toJS]);
+    return jsObjectCallMethod(this, 'sendIssue'.toJS, [title.toJS, text.toJS].toJS);
   }
 
   JSAny sendUserFeedback(String title, String markdown) {
-    return (this as JSObject).callMethod('sendUserFeedback'.toJS, [title.toJS, markdown.toJS]);
+    return jsObjectCallMethod(this, 'sendUserFeedback'.toJS, [title.toJS, markdown.toJS].toJS);
   }
 
   void setForceEnabled(bool enabled) {
-    (this as JSObject).callMethod('setForceEnabled'.toJS, [enabled.toJS]);
+    jsObjectCallMethod(this, 'setForceEnabled'.toJS, enabled.toJS);
   }
 
   void setSDKType(String sdkName, String sdkVersion) {
-    (this as JSObject).callMethod('setSDKType'.toJS, [sdkName.toJS, sdkVersion.toJS]);
+    jsObjectCallMethod(this, 'setSDKType'.toJS, [sdkName.toJS, sdkVersion.toJS].toJS);
   }
 
   JSAny getDeviceURL() {
-    return (this as JSObject).callMethod('getDeviceURL'.toJS, []);
+    return jsObjectCallMethod(this, 'getDeviceURL'.toJS, null);
   }
 
   JSAny getSessionURL() {
-    return (this as JSObject).callMethod('getSessionURL'.toJS, []);
+    return jsObjectCallMethod(this, 'getSessionURL'.toJS, null);
   }
 
   void sendLog(LogEntry logEntry) {
-    (this as JSObject).callMethod('sendLog'.toJS, [logEntry]);
+    jsObjectCallMethod(this, 'sendLog'.toJS, logEntry);
   }
 
   void trace(String log) {
-    (this as JSObject).callMethod('trace'.toJS, [log.toJS]);
+    jsObjectCallMethod(this, 'trace'.toJS, log.toJS);
   }
 
   void info(String log) {
-    (this as JSObject).callMethod('info'.toJS, [log.toJS]);
+    jsObjectCallMethod(this, 'info'.toJS, log.toJS);
   }
 
   void log(String log) {
-    (this as JSObject).callMethod('log'.toJS, [log.toJS]);
+    jsObjectCallMethod(this, 'log'.toJS, log.toJS);
   }
 
   void warn(String log) {
-    (this as JSObject).callMethod('warn'.toJS, [log.toJS]);
+    jsObjectCallMethod(this, 'warn'.toJS, log.toJS);
   }
 
   void error(String log) {
-    (this as JSObject).callMethod('error'.toJS, [log.toJS]);
+    jsObjectCallMethod(this, 'error'.toJS, log.toJS);
   }
 
   void fatal(String log) {
-    (this as JSObject).callMethod('fatal'.toJS, [log.toJS]);
+    jsObjectCallMethod(this, 'fatal'.toJS, log.toJS);
   }
 
   void forceSendOnce() {
-    (this as JSObject).callMethod('forceSendOnce'.toJS, []);
+    jsObjectCallMethod(this, 'forceSendOnce'.toJS, null);
   }
 
   UserFeedbackResult getUserFeedback(UserFeedbackOptions options) {
-    return (this as JSObject).callMethod('getUserFeedback'.toJS, [options]) as UserFeedbackResult;
+    return jsObjectCallMethod(this, 'getUserFeedback'.toJS, options) as UserFeedbackResult;
   }
 }
 
@@ -166,13 +167,13 @@ class LogEntry implements JSObject {
 }
 
 extension LogEntryExtension on LogEntry {
-  int get line => (this as JSObject)['line'.toJS] as int;
-  int get level => (this as JSObject)['level'.toJS] as int;
-  String get tag => ((this as JSObject)['tag'.toJS] as JSString).toDart;
-  String get method => ((this as JSObject)['method'.toJS] as JSString).toDart;
-  String get file => ((this as JSObject)['file'.toJS] as JSString).toDart;
-  String get text => ((this as JSObject)['text'.toJS] as JSString).toDart;
-  String get url => ((this as JSObject)['url'.toJS] as JSString).toDart;
+  int get line => jsObjectGetProperty(this, 'line'.toJS) as int;
+  int get level => jsObjectGetProperty(this, 'level'.toJS) as int;
+  String get tag => (jsObjectGetProperty(this, 'tag'.toJS) as JSString).toDart;
+  String get method => (jsObjectGetProperty(this, 'method'.toJS) as JSString).toDart;
+  String get file => (jsObjectGetProperty(this, 'file'.toJS) as JSString).toDart;
+  String get text => (jsObjectGetProperty(this, 'text'.toJS) as JSString).toDart;
+  String get url => (jsObjectGetProperty(this, 'url'.toJS) as JSString).toDart;
 }
 
 @JS()
@@ -188,11 +189,11 @@ class UserFeedbackOptions implements JSObject {
 }
 
 extension UserFeedbackOptionsExtension on UserFeedbackOptions {
-  String? get title => ((this as JSObject)['title'.toJS] as JSString?)?.toDart;
-  String? get hint => ((this as JSObject)['hint'.toJS] as JSString?)?.toDart;
-  String? get subjectPlaceholder => ((this as JSObject)['subjectPlaceholder'.toJS] as JSString?)?.toDart;
-  String? get feedbackPlaceholder => ((this as JSObject)['feedbackPlaceholder'.toJS] as JSString?)?.toDart;
-  String? get submitLabel => ((this as JSObject)['submitLabel'.toJS] as JSString?)?.toDart;
+  String? get title => (jsObjectGetProperty(this, 'title'.toJS) as JSString?)?.toDart;
+  String? get hint => (jsObjectGetProperty(this, 'hint'.toJS) as JSString?)?.toDart;
+  String? get subjectPlaceholder => (jsObjectGetProperty(this, 'subjectPlaceholder'.toJS) as JSString?)?.toDart;
+  String? get feedbackPlaceholder => (jsObjectGetProperty(this, 'feedbackPlaceholder'.toJS) as JSString?)?.toDart;
+  String? get submitLabel => (jsObjectGetProperty(this, 'submitLabel'.toJS) as JSString?)?.toDart;
 }
 
 @JS()
@@ -202,6 +203,6 @@ class UserFeedbackResult implements JSObject {
 }
 
 extension UserFeedbackResultExtension on UserFeedbackResult {
-  bool get isSent => (this as JSObject)['isSent'.toJS] as bool;
-  String? get feedbackURL => ((this as JSObject)['feedbackURL'.toJS] as JSString?)?.toDart;
+  bool get isSent => jsObjectGetProperty(this, 'isSent'.toJS) as bool;
+  String? get feedbackURL => (jsObjectGetProperty(this, 'feedbackURL'.toJS) as JSString?)?.toDart;
 }

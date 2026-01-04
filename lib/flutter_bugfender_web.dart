@@ -60,8 +60,8 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
   }
 
   Future<void> _loadJSLibrary() async {
-    final globalThis = web.window.globalThis;
-    final bugfender = (globalThis as JSObject)['Bugfender'.toJS];
+    final globalThis = web.window as JSObject;
+    final bugfender = jsObjectGetProperty(globalThis, 'Bugfender'.toJS);
     if (bugfender != null && bugfender.isA<JSObject>()) {
       // Bugfender is already loaded, nothing to do
       print(
@@ -91,25 +91,26 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
     await _loadJSLibrary();
 
     // call Bugfender.init(options)
-    final globalThis = web.window.globalThis;
-    final bugfender = (globalThis as JSObject)['Bugfender'.toJS] as JSObject;
+    final globalThis = web.window as JSObject;
+    final bugfender = jsObjectGetProperty(globalThis, 'Bugfender'.toJS) as JSObject;
     final jsOptions = _mapToJSObject(options);
-    final jsPromise = bugfender.callMethod('init'.toJS, [jsOptions]) as JSObject;
+    final jsPromise = jsObjectCallMethod(bugfender, 'init'.toJS, jsOptions) as JSObject;
 
     // convert the JS Promise to a Dart Future
     final completer = new Completer<void>();
-    jsPromise.callMethod('then'.toJS, [
+    jsObjectCallMethod(jsPromise, 'then'.toJS, [
       (() => completer.complete()).toJS,
       ((Object error) => completer.completeError(error)).toJS,
-    ]);
+    ].toJS);
     return completer.future;
   }
 
   JSObject _mapToJSObject(Map<String, Object> map) {
     // Create a JS object using Object() constructor
-    final obj = (web.window.globalThis as JSObject).callMethod('Object'.toJS, []) as JSObject;
+    final windowObj = web.window as JSObject;
+    final obj = jsObjectCallMethod(windowObj, 'Object'.toJS, [].toJS) as JSObject;
     map.forEach((key, value) {
-      obj[key.toJS] = _toJSAny(value);
+      jsObjectSetProperty(obj, key.toJS, _toJSAny(value));
     });
     return obj;
   }
@@ -298,7 +299,7 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
 
   Future<T> _promiseToFuture<T>(JSAny promise) async {
     final completer = Completer<T>();
-    (promise as JSObject).callMethod('then'.toJS, [
+    jsObjectCallMethod(promise as JSObject, 'then'.toJS, [
       ((JSAny value) {
         if (T == String && value is JSString) {
           completer.complete((value as JSString).toDart as T);
@@ -309,7 +310,7 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
         }
       }).toJS,
       ((Object error) => completer.completeError(error)).toJS,
-    ]);
+    ].toJS);
     return completer.future;
   }
 }
