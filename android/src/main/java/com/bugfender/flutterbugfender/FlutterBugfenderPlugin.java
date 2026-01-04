@@ -156,7 +156,7 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
                 break;
             case "setSDKType":
                 String sdkName = call.argument("sdkName");
-                String sdkVersion = call.argument("sdkVersion");
+                Integer sdkVersion = call.argument("sdkVersion");
                 Bugfender.setSDKType(sdkName, sdkVersion);
                 result.success(null);
                 break;

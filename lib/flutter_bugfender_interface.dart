@@ -70,7 +70,7 @@ abstract class FlutterBugfenderInterface {
     throw UnimplementedError('setForceEnabled() has not been implemented.');
   }
 
-  Future<void> setSDKType(String sdkName, String sdkVersion) {
+  Future<void> setSDKType(String sdkName, int sdkVersion) {
     throw UnimplementedError('setSDKType() has not been implemented.');
   }
 

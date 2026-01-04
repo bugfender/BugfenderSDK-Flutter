@@ -5,6 +5,9 @@ import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 
 final _flutterBugfenderInterface = FlutterBugfenderInterface.instance;
 
+/// The version of the flutter_bugfender SDK
+const int flutterBugfenderVersion = 40000;
+
 enum LogLevel { trace, debug, info, warning, error, fatal }
 
 class FlutterBugfender {
@@ -40,9 +43,9 @@ class FlutterBugfender {
     String? overrideDeviceName,
     String? version,
     String? build,
-  }) {
+  }) async {
     WidgetsFlutterBinding.ensureInitialized();
-    return _flutterBugfenderInterface.init(
+    await _flutterBugfenderInterface.init(
       appKey,
       apiUri: apiUri,
       baseUri: baseUri,
@@ -55,6 +58,8 @@ class FlutterBugfender {
       version: version,
       build: build,
     );
+    // Automatically set SDK type to "flutter" with the SDK version
+    await setSDKType('flutter', flutterBugfenderVersion);
   }
 
   /// Helper method to allow Bugfender to detect uncaught exceptions and
@@ -130,8 +135,8 @@ class FlutterBugfender {
   static Future<void> setForceEnabled(bool enabled) =>
       _flutterBugfenderInterface.setForceEnabled(enabled);
 
-  /// Set the SDK type identifier with name and version (e.g., "flutter", "4.0.0")
-  static Future<void> setSDKType(String sdkName, String sdkVersion) =>
+  /// Set the SDK type identifier with name and version (e.g., "flutter", 40000)
+  static Future<void> setSDKType(String sdkName, int sdkVersion) =>
       _flutterBugfenderInterface.setSDKType(sdkName, sdkVersion);
 
   /// Force enable sending logs and crashes to Bugfender, only for this session

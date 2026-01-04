@@ -186,8 +186,8 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
   }
 
   @override
-  Future<void> setSDKType(String sdkName, String sdkVersion) async {
-    bugfender_web.setSDKType(sdkName, sdkVersion);
+  Future<void> setSDKType(String sdkName, int sdkVersion) async {
+    bugfender_web.setSDKType(sdkName, sdkVersion.toString());
   }
 
   @override

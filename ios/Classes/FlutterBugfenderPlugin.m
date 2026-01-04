@@ -98,8 +98,8 @@
     } else if ([@"setSDKType" isEqualToString:call.method]) {
         NSDictionary *arguments = call.arguments;
         NSString *sdkName = arguments[@"sdkName"];
-        NSString *sdkVersion = arguments[@"sdkVersion"];
-        [Bugfender setSDKType:sdkName version:sdkVersion];
+        NSNumber *sdkVersion = arguments[@"sdkVersion"];
+        [Bugfender setSDKType:sdkName version:[sdkVersion integerValue]];
         result(nil);
     } else if ([@"forceSendOnce" isEqualToString:call.method]) {
         [Bugfender forceSendOnce];
