@@ -1,4 +1,4 @@
-package com.bugfender.flutter_bugfender_example;
+package com.bugfender.flutterbugfenderexample;
 
 import io.flutter.embedding.android.FlutterActivity;
 
