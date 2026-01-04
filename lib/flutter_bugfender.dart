@@ -130,6 +130,10 @@ class FlutterBugfender {
   static Future<void> setForceEnabled(bool enabled) =>
       _flutterBugfenderInterface.setForceEnabled(enabled);
 
+  /// Set the SDK type identifier with name and version (e.g., "flutter", "4.0.0")
+  static Future<void> setSDKType(String sdkName, String sdkVersion) =>
+      _flutterBugfenderInterface.setSDKType(sdkName, sdkVersion);
+
   /// Force enable sending logs and crashes to Bugfender, only for this session
   static Future<void> forceSendOnce() =>
       _flutterBugfenderInterface.forceSendOnce();

@@ -154,6 +154,12 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
                 Bugfender.setForceEnabled(enabled);
                 result.success(null);
                 break;
+            case "setSDKType":
+                String sdkName = call.argument("sdkName");
+                String sdkVersion = call.argument("sdkVersion");
+                Bugfender.setSDKType(sdkName, sdkVersion);
+                result.success(null);
+                break;
             case "forceSendOnce":
                 Bugfender.forceSendOnce();
                 result.success(null);

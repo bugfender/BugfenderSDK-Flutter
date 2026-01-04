@@ -109,6 +109,14 @@ class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
   }
 
   @override
+  Future<void> setSDKType(String sdkName, String sdkVersion) {
+    return _channel.invokeMethod('setSDKType', {
+      'sdkName': sdkName,
+      'sdkVersion': sdkVersion,
+    });
+  }
+
+  @override
   Future<void> forceSendOnce() {
     return _channel.invokeMethod('forceSendOnce');
   }
