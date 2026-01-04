@@ -78,7 +78,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   generateException() async {
-    var result = 100 ~/ 0;
+    var _ = 100 ~/ 0;
   }
 
   generateError() {

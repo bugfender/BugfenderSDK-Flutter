@@ -22,7 +22,7 @@ rootProject.allprojects {
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 34
 
     defaultConfig {
         minSdkVersion 16
@@ -38,5 +38,5 @@ android {
 }
 
 dependencies {
-    implementation 'com.bugfender.sdk:android:3.+'
+    implementation 'com.bugfender.sdk:android:3.6.1'
 }
