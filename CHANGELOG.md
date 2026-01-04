@@ -1,7 +1,7 @@
 ## [4.0.0]
 * Add support for WASM (WebAssembly) - migrated from `dart:js` to `dart:js_interop` and `package:web`
 * Added `setSDKType` method to identify the SDK type and version (automatically called during initialization with "flutter" and SDK version)
-* Update Bugfender SDK for iOS and Android to latest versions (2.2.0, 3.6.0)
+* Update Bugfender SDK for iOS and Android to latest versions (2.2.0, 3.6.1)
 * Android compile SDK updated to 34
 * Updated minimum Dart SDK constraint to >=3.3.0 to support extension types
 
