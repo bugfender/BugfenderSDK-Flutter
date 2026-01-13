@@ -1,3 +1,6 @@
+## [4.1.0]
+* Remove dependency on `package:web`
+
 ## [4.0.0]
 * Add support for WASM (WebAssembly) - migrated from `dart:js` to `dart:js_interop` and `package:web`
 * Added `setSDKType` method to identify the SDK type and version (automatically called during initialization with "flutter" and SDK version)
