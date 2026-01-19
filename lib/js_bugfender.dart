@@ -20,7 +20,7 @@ external JSPromise<JSString> sendUserFeedback(String title, String markdown);
 external void setForceEnabled(bool enabled);
 
 @JS('Bugfender.setSDKType')
-external void setSDKType(String sdkName, String sdkVersion);
+external void setSDKType(String sdkName, int sdkVersion);
 
 @JS('Bugfender.getDeviceURL')
 external JSPromise<JSString> getDeviceURL();

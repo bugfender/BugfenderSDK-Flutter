@@ -117,6 +117,9 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
     // load the JS library
     await _loadJSLibrary();
 
+    // Set SDK type before init() to ensure custom User-Agent is used
+    bugfender_web.setSDKType('flutter', flutterBugfenderVersion);
+
     // Convert Dart Map to JSObject
     final jsOptions = options.jsify() as JSObject;
 
@@ -187,7 +190,7 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
 
   @override
   Future<void> setSDKType(String sdkName, int sdkVersion) async {
-    // no-op on web
+    bugfender_web.setSDKType(sdkName, sdkVersion);
   }
 
   @override
