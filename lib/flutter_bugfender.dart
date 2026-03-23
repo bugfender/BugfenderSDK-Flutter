@@ -6,7 +6,7 @@ import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 final _flutterBugfenderInterface = FlutterBugfenderInterface.instance;
 
 /// The version of the flutter_bugfender SDK
-const int flutterBugfenderVersion = 20260104;
+const int flutterBugfenderVersion = 20260119;
 
 enum LogLevel { trace, debug, info, warning, error, fatal }
 
