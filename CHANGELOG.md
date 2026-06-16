@@ -1,3 +1,6 @@
+## [4.1.0]
+* Remove dependency on `package:web`
+
 ## [4.0.1]
 * Updated Bugfender Web SDK
 
