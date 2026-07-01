@@ -1,4 +1,4 @@
-#import "FlutterBugfenderPlugin.h"
+#import "./include/flutter_bugfender/FlutterBugfenderPlugin.h"
 @import BugfenderSDK;
 
 @implementation FlutterBugfenderPlugin
