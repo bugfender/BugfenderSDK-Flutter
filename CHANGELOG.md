@@ -1,3 +1,6 @@
+## [4.2.0]
+* Add support for Swift Package Manager on iOS
+
 ## [4.1.0]
 * Remove dependency on `package:web`
 
