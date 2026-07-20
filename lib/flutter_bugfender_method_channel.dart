@@ -211,4 +211,35 @@ class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
       }
     });
   }
+
+  @override
+  Future<void> setNetworkLoggingEnabled(bool enabled) {
+    return _channel.invokeMethod('setNetworkLoggingEnabled', enabled);
+  }
+
+  @override
+  Future<void> setNetworkLoggingCaptureBodies(bool capture) {
+    return _channel.invokeMethod('setNetworkLoggingCaptureBodies', capture);
+  }
+
+  @override
+  Future<void> setNetworkLoggingCaptureErrorResponseBodies(bool capture) {
+    return _channel.invokeMethod(
+        'setNetworkLoggingCaptureErrorResponseBodies', capture);
+  }
+
+  @override
+  Future<void> setNetworkLoggingURLFilter(
+      {List<String>? allowlist, List<String>? denylist}) {
+    return _channel.invokeMethod('setNetworkLoggingURLFilter', {
+      'allowlist': allowlist,
+      'denylist': denylist,
+    });
+  }
+
+  @override
+  Future<void> setNetworkLoggingMaxRequestsPerMinute(int? count) {
+    return _channel.invokeMethod(
+        'setNetworkLoggingMaxRequestsPerMinute', count);
+  }
 }

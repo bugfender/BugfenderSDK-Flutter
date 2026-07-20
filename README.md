@@ -12,7 +12,7 @@ Edit `pubspec.yaml` and add add `flutter_bugfender` to `dependencies`:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_bugfender: ^4.0.0
+  flutter_bugfender: ^4.2.0
 ```
 
 Then run `flutter pub get` (or ‘Packages Get’ in IntelliJ) to download the package.
@@ -33,10 +33,20 @@ void main() {
         enableUIEventLogging: true,
         enableAndroidLogcatLogging: true);
     FlutterBugfender.log("hello world!");
+
+    // Optional: capture network requests (disabled by default)
+    await FlutterBugfender.setNetworkLoggingEnabled(true);
+
     runApp(new MyApp());
   });
 }
 ```
+
+Network logging notes:
+
+- **Web:** intercepts `fetch` and `XMLHttpRequest`.
+- **iOS:** captures `URLSession` traffic.
+- **Android:** enable via the API above; OkHttp/Ktor apps also need the Bugfender interceptor/plugin (`android-okhttp` / `android-ktor`). See the [Android docs](https://docs.bugfender.com/docs/platforms/android/java).
 
 # Documentation
 For information on how to use our SDK, you can check the [documentation](https://docs.bugfender.com/docs/platforms/hybrid-platforms/bugfender-for-flutter) to configure your project.

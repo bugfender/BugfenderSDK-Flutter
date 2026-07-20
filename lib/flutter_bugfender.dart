@@ -6,7 +6,7 @@ import 'package:flutter_bugfender/flutter_bugfender_interface.dart';
 final _flutterBugfenderInterface = FlutterBugfenderInterface.instance;
 
 /// The version of the flutter_bugfender SDK
-const int flutterBugfenderVersion = 20260616;
+const int flutterBugfenderVersion = 20260720;
 
 enum LogLevel { trace, debug, info, warning, error, fatal }
 
@@ -212,4 +212,37 @@ class FlutterBugfender {
           messageHint: messageHint,
           sendButtonText: sendButtonText,
           cancelButtonText: cancelButtonText);
+
+  /// Enable or disable network request/response capture. Defaults to `false`.
+  ///
+  /// Captured entries are sent as logs tagged `bf_network`.
+  /// On Android, apps using OkHttp/Ktor also need the corresponding Bugfender
+  /// interceptor/plugin. On web, `fetch` and `XMLHttpRequest` are intercepted.
+  /// On iOS, URLSession traffic is captured.
+  static Future<void> setNetworkLoggingEnabled(bool enabled) =>
+      _flutterBugfenderInterface.setNetworkLoggingEnabled(enabled);
+
+  /// Capture request and response bodies (full mode). Defaults to `false`.
+  static Future<void> setNetworkLoggingCaptureBodies(bool capture) =>
+      _flutterBugfenderInterface.setNetworkLoggingCaptureBodies(capture);
+
+  /// Capture response bodies only for HTTP status codes >= 400 when full body
+  /// capture is disabled. Defaults to `false`.
+  static Future<void> setNetworkLoggingCaptureErrorResponseBodies(
+          bool capture) =>
+      _flutterBugfenderInterface
+          .setNetworkLoggingCaptureErrorResponseBodies(capture);
+
+  /// Filter which URLs are captured. Patterns support plain substrings and
+  /// wildcards (for example `https://*.example.com/*`). Pass `null` for either
+  /// list to leave that filter unset.
+  static Future<void> setNetworkLoggingURLFilter(
+          {List<String>? allowlist, List<String>? denylist}) =>
+      _flutterBugfenderInterface.setNetworkLoggingURLFilter(
+          allowlist: allowlist, denylist: denylist);
+
+  /// Limit how many network logs are captured per calendar minute.
+  /// Pass `null` to disable the limit.
+  static Future<void> setNetworkLoggingMaxRequestsPerMinute(int? count) =>
+      _flutterBugfenderInterface.setNetworkLoggingMaxRequestsPerMinute(count);
 }

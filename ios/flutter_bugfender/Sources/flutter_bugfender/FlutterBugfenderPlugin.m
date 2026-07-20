@@ -182,6 +182,23 @@
         //}
         UIViewController* rootViewController = [[[[UIApplication sharedApplication]delegate] window] rootViewController];
         [rootViewController presentViewController:userFeedbackViewController animated:YES completion:nil];
+    } else if ([@"setNetworkLoggingEnabled" isEqualToString:call.method]) {
+        [Bugfender setNetworkLoggingEnabled:[call.arguments boolValue]];
+        result(nil);
+    } else if ([@"setNetworkLoggingCaptureBodies" isEqualToString:call.method]) {
+        [Bugfender setNetworkLoggingCaptureBodies:[call.arguments boolValue]];
+        result(nil);
+    } else if ([@"setNetworkLoggingCaptureErrorResponseBodies" isEqualToString:call.method]) {
+        [Bugfender setNetworkLoggingCaptureErrorResponseBodies:[call.arguments boolValue]];
+        result(nil);
+    } else if ([@"setNetworkLoggingURLFilter" isEqualToString:call.method]) {
+        NSDictionary *arguments = call.arguments;
+        [Bugfender setNetworkLoggingURLFilterWithAllowlist:arguments[@"allowlist"]
+                                                  denylist:arguments[@"denylist"]];
+        result(nil);
+    } else if ([@"setNetworkLoggingMaxRequestsPerMinute" isEqualToString:call.method]) {
+        [Bugfender setNetworkLoggingMaxRequestsPerMinute:call.arguments];
+        result(nil);
     } else {
         result(FlutterMethodNotImplemented);
     }

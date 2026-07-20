@@ -231,6 +231,29 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
                         FEEDBACK_REQUEST_CODE
                 );
                 break;
+            case "setNetworkLoggingEnabled":
+                Bugfender.setNetworkLoggingEnabled((Boolean) call.arguments());
+                result.success(null);
+                break;
+            case "setNetworkLoggingCaptureBodies":
+                Bugfender.setNetworkLoggingCaptureBodies((Boolean) call.arguments());
+                result.success(null);
+                break;
+            case "setNetworkLoggingCaptureErrorResponseBodies":
+                Bugfender.setNetworkLoggingCaptureErrorResponseBodies((Boolean) call.arguments());
+                result.success(null);
+                break;
+            case "setNetworkLoggingURLFilter":
+                Bugfender.setNetworkLoggingURLFilter(
+                        call.argument("allowlist"),
+                        call.argument("denylist")
+                );
+                result.success(null);
+                break;
+            case "setNetworkLoggingMaxRequestsPerMinute":
+                Bugfender.setNetworkLoggingMaxRequestsPerMinute(call.arguments());
+                result.success(null);
+                break;
             default:
                 result.notImplemented();
                 break;

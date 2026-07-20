@@ -15,7 +15,7 @@ Flutter plugin to enable Bugfender reporting.
   s.source_files = 'flutter_bugfender/Sources/flutter_bugfender/**/*.{h,m}'
   s.public_header_files = 'flutter_bugfender/Sources/flutter_bugfender/include/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'BugfenderSDK', '~> 2.2'
+  s.dependency 'BugfenderSDK', '~> 3.0'
   
   s.ios.deployment_target = '12.0'
 end

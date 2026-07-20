@@ -310,4 +310,33 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
       return null;
     }
   }
+
+  @override
+  Future<void> setNetworkLoggingEnabled(bool enabled) async {
+    bugfender_web.setNetworkLoggingEnabled(enabled);
+  }
+
+  @override
+  Future<void> setNetworkLoggingCaptureBodies(bool capture) async {
+    bugfender_web.setNetworkLoggingCaptureBodies(capture);
+  }
+
+  @override
+  Future<void> setNetworkLoggingCaptureErrorResponseBodies(bool capture) async {
+    bugfender_web.setNetworkLoggingCaptureErrorResponseBodies(capture);
+  }
+
+  @override
+  Future<void> setNetworkLoggingURLFilter(
+      {List<String>? allowlist, List<String>? denylist}) async {
+    bugfender_web.setNetworkLoggingURLFilter(
+      allowlist?.jsify(),
+      denylist?.jsify(),
+    );
+  }
+
+  @override
+  Future<void> setNetworkLoggingMaxRequestsPerMinute(int? count) async {
+    bugfender_web.setNetworkLoggingMaxRequestsPerMinute(count?.toJS);
+  }
 }
