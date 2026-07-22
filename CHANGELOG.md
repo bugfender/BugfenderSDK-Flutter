@@ -1,6 +1,6 @@
-## [4.2.0]
+## [5.0.0]
 * Add support for Swift Package Manager on iOS
-* Add network logging APIs (`setNetworkLoggingEnabled`, capture bodies, URL filters, rate limit)
+* Add network logging APIs (`setNetworkLoggingEnabled`, capture bodies, URL filters, rate limit, and obfuscation handlers)
 * Update Bugfender Android SDK to 4.x
 * Update Bugfender iOS SDK to 3.0.1
 * Update Bugfender Web SDK (includes network logging)

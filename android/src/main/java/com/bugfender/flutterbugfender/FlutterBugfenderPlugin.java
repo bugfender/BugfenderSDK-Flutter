@@ -9,10 +9,19 @@ import androidx.annotation.NonNull;
 
 import com.bugfender.sdk.Bugfender;
 import com.bugfender.sdk.LogLevel;
+import com.bugfender.sdk.NetworkLoggingRequestObfuscationHandler;
+import com.bugfender.sdk.NetworkLoggingResponseObfuscationHandler;
+import com.bugfender.sdk.NetworkRequestData;
+import com.bugfender.sdk.NetworkResponseData;
 import com.bugfender.sdk.ui.FeedbackActivity;
 
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.embedding.engine.plugins.activity.ActivityAware;
@@ -29,6 +38,7 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
     private Context applicationContext;
     private Activity activity;
     private ActivityPluginBinding activityPluginBinding;
+    private MethodChannel channel;
 
     private static final int FEEDBACK_REQUEST_CODE = 9564;
 
@@ -52,14 +62,20 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
 
     @Override
     public void onAttachedToEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
-        final MethodChannel channel = new MethodChannel(binding.getBinaryMessenger(), "flutter_bugfender");
+        channel = new MethodChannel(binding.getBinaryMessenger(), "flutter_bugfender");
         channel.setMethodCallHandler(this);
         applicationContext = binding.getApplicationContext();
     }
 
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPlugin.FlutterPluginBinding binding) {
+        if (channel != null) {
+            channel.setMethodCallHandler(null);
+            channel = null;
+        }
         applicationContext = null;
+        Bugfender.setNetworkLoggingRequestObfuscationHandler(null);
+        Bugfender.setNetworkLoggingResponseObfuscationHandler(null);
     }
 
     @Override
@@ -254,10 +270,130 @@ public class FlutterBugfenderPlugin implements FlutterPlugin, MethodChannel.Meth
                 Bugfender.setNetworkLoggingMaxRequestsPerMinute(call.arguments());
                 result.success(null);
                 break;
+            case "setNetworkLoggingRequestObfuscationHandlerEnabled":
+                Boolean requestEnabled = call.arguments();
+                if (Boolean.TRUE.equals(requestEnabled)) {
+                    Bugfender.setNetworkLoggingRequestObfuscationHandler(createRequestObfuscationHandler());
+                } else {
+                    Bugfender.setNetworkLoggingRequestObfuscationHandler(null);
+                }
+                result.success(null);
+                break;
+            case "setNetworkLoggingResponseObfuscationHandlerEnabled":
+                Boolean responseEnabled = call.arguments();
+                if (Boolean.TRUE.equals(responseEnabled)) {
+                    Bugfender.setNetworkLoggingResponseObfuscationHandler(createResponseObfuscationHandler());
+                } else {
+                    Bugfender.setNetworkLoggingResponseObfuscationHandler(null);
+                }
+                result.success(null);
+                break;
             default:
                 result.notImplemented();
                 break;
         }
+    }
+
+    private NetworkLoggingRequestObfuscationHandler createRequestObfuscationHandler() {
+        return (url, headers, body) -> {
+            Map<String, Object> args = new HashMap<>();
+            args.put("url", url);
+            args.put("headers", headers != null ? new HashMap<>(headers) : new HashMap<String, String>());
+            args.put("body", body);
+
+            Map<String, Object> response = invokeDartObfuscation("obfuscateNetworkRequest", args);
+            if (response == null) {
+                return new NetworkRequestData(url, headers, body);
+            }
+
+            String obfuscatedUrl = response.get("url") instanceof String ? (String) response.get("url") : url;
+            Map<String, String> obfuscatedHeaders = toStringMap(response.get("headers"));
+            String obfuscatedBody = response.get("body") instanceof String ? (String) response.get("body") : null;
+            if (!(response.get("body") instanceof String) && response.get("body") == null) {
+                obfuscatedBody = null;
+            }
+            return new NetworkRequestData(obfuscatedUrl, obfuscatedHeaders, obfuscatedBody);
+        };
+    }
+
+    private NetworkLoggingResponseObfuscationHandler createResponseObfuscationHandler() {
+        return (headers, body) -> {
+            Map<String, Object> args = new HashMap<>();
+            args.put("headers", headers != null ? new HashMap<>(headers) : new HashMap<String, String>());
+            args.put("body", body);
+
+            Map<String, Object> response = invokeDartObfuscation("obfuscateNetworkResponse", args);
+            if (response == null) {
+                return new NetworkResponseData(headers, body);
+            }
+
+            Map<String, String> obfuscatedHeaders = toStringMap(response.get("headers"));
+            String obfuscatedBody = response.get("body") instanceof String ? (String) response.get("body") : null;
+            return new NetworkResponseData(obfuscatedHeaders, obfuscatedBody);
+        };
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> invokeDartObfuscation(String method, Map<String, Object> args) {
+        if (channel == null) {
+            return null;
+        }
+
+        // Avoid deadlocking the UI thread while waiting for Dart.
+        if (android.os.Looper.myLooper() == android.os.Looper.getMainLooper()) {
+            return null;
+        }
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        final AtomicReference<Map<String, Object>> resultRef = new AtomicReference<>();
+
+        // MethodChannel callbacks must run on the platform thread.
+        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+            channel.invokeMethod(method, args, new MethodChannel.Result() {
+                @Override
+                public void success(Object result) {
+                    if (result instanceof Map) {
+                        resultRef.set((Map<String, Object>) result);
+                    }
+                    latch.countDown();
+                }
+
+                @Override
+                public void error(String errorCode, String errorMessage, Object errorDetails) {
+                    latch.countDown();
+                }
+
+                @Override
+                public void notImplemented() {
+                    latch.countDown();
+                }
+            });
+        });
+
+        try {
+            if (!latch.await(3, TimeUnit.SECONDS)) {
+                return null;
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return null;
+        }
+        return resultRef.get();
+    }
+
+    private Map<String, String> toStringMap(Object value) {
+        Map<String, String> result = new HashMap<>();
+        if (!(value instanceof Map)) {
+            return result;
+        }
+        Map<?, ?> raw = (Map<?, ?>) value;
+        for (Map.Entry<?, ?> entry : raw.entrySet()) {
+            if (entry.getKey() != null) {
+                result.put(String.valueOf(entry.getKey()),
+                        entry.getValue() != null ? String.valueOf(entry.getValue()) : "");
+            }
+        }
+        return result;
     }
 
     @Override

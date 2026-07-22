@@ -6,6 +6,102 @@ class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
   static const MethodChannel _channel =
       const MethodChannel('flutter_bugfender');
 
+  NetworkLoggingRequestObfuscationHandler? _requestObfuscationHandler;
+  NetworkLoggingResponseObfuscationHandler? _responseObfuscationHandler;
+  bool _methodCallHandlerInstalled = false;
+
+  void _ensureMethodCallHandler() {
+    if (_methodCallHandlerInstalled) {
+      return;
+    }
+    _channel.setMethodCallHandler(_onMethodCall);
+    _methodCallHandlerInstalled = true;
+  }
+
+  Future<dynamic> _onMethodCall(MethodCall call) async {
+    switch (call.method) {
+      case 'obfuscateNetworkRequest':
+        return _obfuscateRequest(call.arguments);
+      case 'obfuscateNetworkResponse':
+        return _obfuscateResponse(call.arguments);
+      default:
+        throw PlatformException(
+          code: 'Unimplemented',
+          details:
+              'flutter_bugfender does not implement method ${call.method}',
+        );
+    }
+  }
+
+  Map<String, dynamic> _obfuscateRequest(dynamic arguments) {
+    final Map<Object?, Object?> args =
+        Map<Object?, Object?>.from(arguments as Map);
+    final String url = (args['url'] as String?) ?? '';
+    final Map<String, String> headers = _stringMap(args['headers']);
+    final String? body = args['body'] as String?;
+
+    final handler = _requestObfuscationHandler;
+    if (handler == null) {
+      return <String, dynamic>{
+        'url': url,
+        'headers': headers,
+        'body': body,
+      };
+    }
+
+    try {
+      final result = handler(url, Map<String, String>.from(headers), body);
+      return <String, dynamic>{
+        'url': result.url,
+        'headers': result.headers,
+        'body': result.body,
+      };
+    } catch (_) {
+      return <String, dynamic>{
+        'url': url,
+        'headers': <String, String>{},
+        'body': null,
+      };
+    }
+  }
+
+  Map<String, dynamic> _obfuscateResponse(dynamic arguments) {
+    final Map<Object?, Object?> args =
+        Map<Object?, Object?>.from(arguments as Map);
+    final Map<String, String> headers = _stringMap(args['headers']);
+    final String? body = args['body'] as String?;
+
+    final handler = _responseObfuscationHandler;
+    if (handler == null) {
+      return <String, dynamic>{
+        'headers': headers,
+        'body': body,
+      };
+    }
+
+    try {
+      final result = handler(Map<String, String>.from(headers), body);
+      return <String, dynamic>{
+        'headers': result.headers,
+        'body': result.body,
+      };
+    } catch (_) {
+      return <String, dynamic>{
+        'headers': <String, String>{},
+        'body': null,
+      };
+    }
+  }
+
+  Map<String, String> _stringMap(dynamic value) {
+    if (value is! Map) {
+      return <String, String>{};
+    }
+    return value.map(
+      (key, dynamic entry) => MapEntry(key.toString(), entry?.toString() ?? ''),
+    );
+  }
+
   @override
   Future<void> init(
     String appKey, {
@@ -138,11 +234,11 @@ class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
   @override
   Future<void> sendLog(
       {int line = 0,
-        String method = "",
-        String file = "",
-        LogLevel level = LogLevel.debug,
-        String tag = "",
-        String text = ""}) {
+      String method = "",
+      String file = "",
+      LogLevel level = LogLevel.debug,
+      String tag = "",
+      String text = ""}) {
     return _channel.invokeMethod('sendLog', {
       "line": line,
       "method": method,
@@ -241,5 +337,23 @@ class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
   Future<void> setNetworkLoggingMaxRequestsPerMinute(int? count) {
     return _channel.invokeMethod(
         'setNetworkLoggingMaxRequestsPerMinute', count);
+  }
+
+  @override
+  Future<void> setNetworkLoggingRequestObfuscationHandler(
+      NetworkLoggingRequestObfuscationHandler? handler) {
+    _requestObfuscationHandler = handler;
+    _ensureMethodCallHandler();
+    return _channel.invokeMethod(
+        'setNetworkLoggingRequestObfuscationHandlerEnabled', handler != null);
+  }
+
+  @override
+  Future<void> setNetworkLoggingResponseObfuscationHandler(
+      NetworkLoggingResponseObfuscationHandler? handler) {
+    _responseObfuscationHandler = handler;
+    _ensureMethodCallHandler();
+    return _channel.invokeMethod(
+        'setNetworkLoggingResponseObfuscationHandlerEnabled', handler != null);
   }
 }

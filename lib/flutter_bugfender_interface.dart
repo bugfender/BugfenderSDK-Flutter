@@ -160,6 +160,18 @@ abstract class FlutterBugfenderInterface {
         'setNetworkLoggingMaxRequestsPerMinute() has not been implemented.');
   }
 
+  Future<void> setNetworkLoggingRequestObfuscationHandler(
+      NetworkLoggingRequestObfuscationHandler? handler) {
+    throw UnimplementedError(
+        'setNetworkLoggingRequestObfuscationHandler() has not been implemented.');
+  }
+
+  Future<void> setNetworkLoggingResponseObfuscationHandler(
+      NetworkLoggingResponseObfuscationHandler? handler) {
+    throw UnimplementedError(
+        'setNetworkLoggingResponseObfuscationHandler() has not been implemented.');
+  }
+
   @visibleForTesting
   bool get isMock => false;
 

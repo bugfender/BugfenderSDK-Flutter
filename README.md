@@ -12,7 +12,7 @@ Edit `pubspec.yaml` and add add `flutter_bugfender` to `dependencies`:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_bugfender: ^4.2.0
+  flutter_bugfender: ^5.0.0
 ```
 
 Then run `flutter pub get` (or ‘Packages Get’ in IntelliJ) to download the package.
@@ -36,6 +36,15 @@ void main() {
 
     // Optional: capture network requests (disabled by default)
     await FlutterBugfender.setNetworkLoggingEnabled(true);
+    await FlutterBugfender.setNetworkLoggingRequestObfuscationHandler(
+      (url, headers, body) {
+        final safeHeaders = Map<String, String>.from(headers);
+        if (safeHeaders.containsKey('Authorization')) {
+          safeHeaders['Authorization'] = '***';
+        }
+        return NetworkRequestData(url: url, headers: safeHeaders, body: body);
+      },
+    );
 
     runApp(new MyApp());
   });
@@ -47,6 +56,7 @@ Network logging notes:
 - **Web:** intercepts `fetch` and `XMLHttpRequest`.
 - **iOS:** captures `URLSession` traffic.
 - **Android:** enable via the API above; OkHttp/Ktor apps also need the Bugfender interceptor/plugin (`android-okhttp` / `android-ktor`). See the [Android docs](https://docs.bugfender.com/docs/platforms/android/java).
+- Use `setNetworkLoggingRequestObfuscationHandler` / `setNetworkLoggingResponseObfuscationHandler` to redact sensitive headers or bodies before they are logged.
 
 # Documentation
 For information on how to use our SDK, you can check the [documentation](https://docs.bugfender.com/docs/platforms/hybrid-platforms/bugfender-for-flutter) to configure your project.

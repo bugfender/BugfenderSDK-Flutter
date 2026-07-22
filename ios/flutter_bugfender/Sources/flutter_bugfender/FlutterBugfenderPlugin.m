@@ -1,12 +1,17 @@
 #import "./include/flutter_bugfender/FlutterBugfenderPlugin.h"
 @import BugfenderSDK;
 
+@interface FlutterBugfenderPlugin ()
+@property(nonatomic, strong) FlutterMethodChannel *channel;
+@end
+
 @implementation FlutterBugfenderPlugin
 + (void)registerWithRegistrar:(NSObject <FlutterPluginRegistrar> *)registrar {
     FlutterMethodChannel *channel = [FlutterMethodChannel
             methodChannelWithName:@"flutter_bugfender"
                   binaryMessenger:[registrar messenger]];
     FlutterBugfenderPlugin *instance = [[FlutterBugfenderPlugin alloc] init];
+    instance.channel = channel;
     [registrar addMethodCallDelegate:instance channel:channel];
 }
 
@@ -34,6 +39,106 @@
             return BFLogLevelDefault;
             break;
     }
+}
+
+- (NSDictionary *)invokeDartObfuscation:(NSString *)method arguments:(NSDictionary *)arguments {
+    if (self.channel == nil) {
+        return nil;
+    }
+
+    // Avoid deadlocking the platform/UI thread while waiting for Dart.
+    if ([NSThread isMainThread]) {
+        return nil;
+    }
+
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    __block NSDictionary *response = nil;
+
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.channel invokeMethod:method
+                         arguments:arguments
+                            result:^(id _Nullable result) {
+            if ([result isKindOfClass:[NSDictionary class]]) {
+                response = result;
+            }
+            dispatch_semaphore_signal(semaphore);
+        }];
+    });
+
+    long waitResult = dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)));
+    if (waitResult != 0) {
+        return nil;
+    }
+    return response;
+}
+
+- (NSDictionary<NSString *, NSString *> *)stringMapFrom:(id)value {
+    NSMutableDictionary<NSString *, NSString *> *mapped = [NSMutableDictionary dictionary];
+    if (![value isKindOfClass:[NSDictionary class]]) {
+        return mapped;
+    }
+    NSDictionary *raw = (NSDictionary *)value;
+    for (id key in raw) {
+        id entry = raw[key];
+        mapped[[key description]] = entry == [NSNull null] || entry == nil ? @"" : [entry description];
+    }
+    return mapped;
+}
+
+- (void)installRequestObfuscationHandler {
+    __weak FlutterBugfenderPlugin *weakSelf = self;
+    [Bugfender setNetworkLoggingRequestObfuscationHandler:^BFNetworkRequestData * _Nonnull(NSString * _Nonnull url, NSDictionary<NSString *,NSString *> * _Nonnull headers, NSString * _Nullable body) {
+        FlutterBugfenderPlugin *strongSelf = weakSelf;
+        if (strongSelf == nil) {
+            return [[BFNetworkRequestData alloc] initWithURL:url headers:headers body:body];
+        }
+
+        NSDictionary *response = [strongSelf invokeDartObfuscation:@"obfuscateNetworkRequest"
+                                                         arguments:@{
+            @"url": url ?: @"",
+            @"headers": headers ?: @{},
+            @"body": body ?: [NSNull null],
+        }];
+        if (response == nil) {
+            return [[BFNetworkRequestData alloc] initWithURL:url headers:headers body:body];
+        }
+
+        NSString *obfuscatedUrl = [response[@"url"] isKindOfClass:[NSString class]] ? response[@"url"] : url;
+        NSDictionary<NSString *, NSString *> *obfuscatedHeaders = [strongSelf stringMapFrom:response[@"headers"]];
+        NSString *obfuscatedBody = nil;
+        if ([response[@"body"] isKindOfClass:[NSString class]]) {
+            obfuscatedBody = response[@"body"];
+        } else if (response[@"body"] == [NSNull null] || response[@"body"] == nil) {
+            obfuscatedBody = nil;
+        }
+        return [[BFNetworkRequestData alloc] initWithURL:obfuscatedUrl headers:obfuscatedHeaders body:obfuscatedBody];
+    }];
+}
+
+- (void)installResponseObfuscationHandler {
+    __weak FlutterBugfenderPlugin *weakSelf = self;
+    [Bugfender setNetworkLoggingResponseObfuscationHandler:^BFNetworkResponseData * _Nonnull(NSDictionary<NSString *,NSString *> * _Nonnull headers, NSString * _Nullable body) {
+        FlutterBugfenderPlugin *strongSelf = weakSelf;
+        if (strongSelf == nil) {
+            return [[BFNetworkResponseData alloc] initWithHeaders:headers body:body];
+        }
+
+        NSDictionary *response = [strongSelf invokeDartObfuscation:@"obfuscateNetworkResponse"
+                                                         arguments:@{
+            @"headers": headers ?: @{},
+            @"body": body ?: [NSNull null],
+        }];
+        if (response == nil) {
+            return [[BFNetworkResponseData alloc] initWithHeaders:headers body:body];
+        }
+
+        NSDictionary<NSString *, NSString *> *obfuscatedHeaders = [strongSelf stringMapFrom:response[@"headers"]];
+        NSString *obfuscatedBody = nil;
+        if ([response[@"body"] isKindOfClass:[NSString class]]) {
+            obfuscatedBody = response[@"body"];
+        }
+        return [[BFNetworkResponseData alloc] initWithHeaders:obfuscatedHeaders body:obfuscatedBody];
+    }];
 }
 
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result {
@@ -177,9 +282,6 @@
             }
         }];
         userFeedbackViewController.modalPresentationStyle = UIModalPresentationFullScreen;
-        //if (@available(iOS 13.0, *)) {
-        //    userFeedbackViewController.modalInPresentation = YES;
-        //}
         UIViewController* rootViewController = [[[[UIApplication sharedApplication]delegate] window] rootViewController];
         [rootViewController presentViewController:userFeedbackViewController animated:YES completion:nil];
     } else if ([@"setNetworkLoggingEnabled" isEqualToString:call.method]) {
@@ -198,6 +300,20 @@
         result(nil);
     } else if ([@"setNetworkLoggingMaxRequestsPerMinute" isEqualToString:call.method]) {
         [Bugfender setNetworkLoggingMaxRequestsPerMinute:call.arguments];
+        result(nil);
+    } else if ([@"setNetworkLoggingRequestObfuscationHandlerEnabled" isEqualToString:call.method]) {
+        if ([call.arguments boolValue]) {
+            [self installRequestObfuscationHandler];
+        } else {
+            [Bugfender setNetworkLoggingRequestObfuscationHandler:nil];
+        }
+        result(nil);
+    } else if ([@"setNetworkLoggingResponseObfuscationHandlerEnabled" isEqualToString:call.method]) {
+        if ([call.arguments boolValue]) {
+            [self installResponseObfuscationHandler];
+        } else {
+            [Bugfender setNetworkLoggingResponseObfuscationHandler:nil];
+        }
         result(nil);
     } else {
         result(FlutterMethodNotImplemented);

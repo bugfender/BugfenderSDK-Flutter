@@ -71,6 +71,12 @@ external void setNetworkLoggingURLFilter(JSAny? allowlist, JSAny? denylist);
 @JS('Bugfender.setNetworkLoggingMaxRequestsPerMinute')
 external void setNetworkLoggingMaxRequestsPerMinute(JSAny? count);
 
+@JS('Bugfender.setNetworkLoggingRequestObfuscationHandler')
+external void setNetworkLoggingRequestObfuscationHandler(JSFunction? handler);
+
+@JS('Bugfender.setNetworkLoggingResponseObfuscationHandler')
+external void setNetworkLoggingResponseObfuscationHandler(JSFunction? handler);
+
 // Extension types for interop objects
 extension type LogEntry._(JSObject _) implements JSObject {
   external factory LogEntry({

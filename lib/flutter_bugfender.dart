@@ -10,6 +10,43 @@ const int flutterBugfenderVersion = 20260720;
 
 enum LogLevel { trace, debug, info, warning, error, fatal }
 
+/// Obfuscated request fields returned by a request obfuscation handler.
+class NetworkRequestData {
+  final String url;
+  final Map<String, String> headers;
+  final String? body;
+
+  const NetworkRequestData({
+    required this.url,
+    required this.headers,
+    this.body,
+  });
+}
+
+/// Obfuscated response fields returned by a response obfuscation handler.
+class NetworkResponseData {
+  final Map<String, String> headers;
+  final String? body;
+
+  const NetworkResponseData({
+    required this.headers,
+    this.body,
+  });
+}
+
+/// Request obfuscation: receive URL, headers and body; return possibly redacted values.
+typedef NetworkLoggingRequestObfuscationHandler = NetworkRequestData Function(
+  String url,
+  Map<String, String> headers,
+  String? body,
+);
+
+/// Response obfuscation: receive headers and body; return possibly redacted values.
+typedef NetworkLoggingResponseObfuscationHandler = NetworkResponseData Function(
+  Map<String, String> headers,
+  String? body,
+);
+
 class FlutterBugfender {
   /// Init Bugfender with the following parameteres:
   ///  - [appKey] - The app key to log into
@@ -245,4 +282,18 @@ class FlutterBugfender {
   /// Pass `null` to disable the limit.
   static Future<void> setNetworkLoggingMaxRequestsPerMinute(int? count) =>
       _flutterBugfenderInterface.setNetworkLoggingMaxRequestsPerMinute(count);
+
+  /// Optional request obfuscation handler applied before a network log is sent.
+  /// Pass `null` to clear the handler.
+  static Future<void> setNetworkLoggingRequestObfuscationHandler(
+          NetworkLoggingRequestObfuscationHandler? handler) =>
+      _flutterBugfenderInterface
+          .setNetworkLoggingRequestObfuscationHandler(handler);
+
+  /// Optional response obfuscation handler applied before a network log is sent.
+  /// Pass `null` to clear the handler.
+  static Future<void> setNetworkLoggingResponseObfuscationHandler(
+          NetworkLoggingResponseObfuscationHandler? handler) =>
+      _flutterBugfenderInterface
+          .setNetworkLoggingResponseObfuscationHandler(handler);
 }
