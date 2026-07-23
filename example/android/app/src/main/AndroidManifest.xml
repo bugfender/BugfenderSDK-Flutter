@@ -13,7 +13,8 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:label="flutter_bugfender_example"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
         <activity
             android:exported="true"
             android:name=".MainActivity"

@@ -328,8 +328,8 @@ class MethodChannelFlutterBugfender extends FlutterBugfenderInterface {
   Future<void> setNetworkLoggingURLFilter(
       {List<String>? allowlist, List<String>? denylist}) {
     return _channel.invokeMethod('setNetworkLoggingURLFilter', {
-      'allowlist': allowlist,
-      'denylist': denylist,
+      if (allowlist != null) 'allowlist': allowlist,
+      if (denylist != null) 'denylist': denylist,
     });
   }
 

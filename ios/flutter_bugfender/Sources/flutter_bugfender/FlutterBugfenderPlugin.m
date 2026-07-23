@@ -294,12 +294,25 @@
         [Bugfender setNetworkLoggingCaptureErrorResponseBodies:[call.arguments boolValue]];
         result(nil);
     } else if ([@"setNetworkLoggingURLFilter" isEqualToString:call.method]) {
-        NSDictionary *arguments = call.arguments;
-        [Bugfender setNetworkLoggingURLFilterWithAllowlist:arguments[@"allowlist"]
-                                                  denylist:arguments[@"denylist"]];
+        NSDictionary *arguments = [call.arguments isKindOfClass:[NSDictionary class]] ? call.arguments : @{};
+        id allowlist = arguments[@"allowlist"];
+        id denylist = arguments[@"denylist"];
+        if (allowlist == [NSNull null] || ![allowlist isKindOfClass:[NSArray class]]) {
+            allowlist = nil;
+        }
+        if (denylist == [NSNull null] || ![denylist isKindOfClass:[NSArray class]]) {
+            denylist = nil;
+        }
+        [Bugfender setNetworkLoggingURLFilterWithAllowlist:allowlist
+                                                  denylist:denylist];
         result(nil);
     } else if ([@"setNetworkLoggingMaxRequestsPerMinute" isEqualToString:call.method]) {
-        [Bugfender setNetworkLoggingMaxRequestsPerMinute:call.arguments];
+        id arguments = call.arguments;
+        if (arguments == nil || arguments == [NSNull null]) {
+            [Bugfender setNetworkLoggingMaxRequestsPerMinute:nil];
+        } else {
+            [Bugfender setNetworkLoggingMaxRequestsPerMinute:arguments];
+        }
         result(nil);
     } else if ([@"setNetworkLoggingRequestObfuscationHandlerEnabled" isEqualToString:call.method]) {
         if ([call.arguments boolValue]) {
@@ -315,6 +328,58 @@
             [Bugfender setNetworkLoggingResponseObfuscationHandler:nil];
         }
         result(nil);
+    } else if ([@"sendInstrumentedNetworkRequest" isEqualToString:call.method]) {
+        NSDictionary *arguments = [call.arguments isKindOfClass:[NSDictionary class]] ? call.arguments : @{};
+        NSString *urlString = [arguments[@"url"] isKindOfClass:[NSString class]] ? arguments[@"url"] : @"https://example.com/";
+        NSString *httpMethod = [arguments[@"method"] isKindOfClass:[NSString class]] ? [arguments[@"method"] uppercaseString] : @"GET";
+        NSString *body = [arguments[@"body"] isKindOfClass:[NSString class]] ? arguments[@"body"] : nil;
+        NSDictionary *extraHeaders = [arguments[@"headers"] isKindOfClass:[NSDictionary class]] ? arguments[@"headers"] : @{};
+
+        NSURL *url = [NSURL URLWithString:urlString];
+        if (url == nil) {
+            result([FlutterError errorWithCode:@"bad_url" message:@"Invalid URL" details:urlString]);
+            return;
+        }
+
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+        request.HTTPMethod = httpMethod;
+        request.timeoutInterval = 15.0;
+        BOOL hasAuthorization = NO;
+        for (NSString *key in extraHeaders) {
+            id value = extraHeaders[key];
+            if ([key isKindOfClass:[NSString class]] && [value isKindOfClass:[NSString class]]) {
+                [request setValue:(NSString *)value forHTTPHeaderField:key];
+                if ([key caseInsensitiveCompare:@"Authorization"] == NSOrderedSame) {
+                    hasAuthorization = YES;
+                }
+            }
+        }
+        if (!hasAuthorization) {
+            [request setValue:@"secret-token" forHTTPHeaderField:@"Authorization"];
+        }
+        if (body.length > 0 && ([httpMethod isEqualToString:@"POST"] || [httpMethod isEqualToString:@"PUT"] || [httpMethod isEqualToString:@"PATCH"])) {
+            [request setValue:@"application/json; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+            request.HTTPBody = [body dataUsingEncoding:NSUTF8StringEncoding];
+        }
+
+        NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:request
+                                                                     completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            if (error != nil) {
+                result([FlutterError errorWithCode:@"network_error" message:error.localizedDescription details:nil]);
+                return;
+            }
+            NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *)response;
+            NSInteger status = [httpResponse isKindOfClass:[NSHTTPURLResponse class]] ? httpResponse.statusCode : 0;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [Bugfender forceSendOnce];
+                result(@{
+                    @"status": @(status),
+                    @"shouldCapture": @YES,
+                    @"requestId": [NSNull null],
+                });
+            });
+        }];
+        [task resume];
     } else {
         result(FlutterMethodNotImplemented);
     }

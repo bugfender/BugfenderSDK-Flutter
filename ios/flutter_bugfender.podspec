@@ -17,6 +17,6 @@ Flutter plugin to enable Bugfender reporting.
   s.dependency 'Flutter'
   s.dependency 'BugfenderSDK', '~> 3.0.1'
   
-  s.ios.deployment_target = '12.0'
+  s.ios.deployment_target = '13.0'
 end
 
