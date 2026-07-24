@@ -13,6 +13,7 @@ if (localPropertiesFile.exists()) {
 }
 
 android {
+    ndkVersion "28.2.13676358"
     namespace "com.bugfender.flutterbugfenderexample"
     compileSdkVersion 34
 

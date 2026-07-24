@@ -310,4 +310,91 @@ class WebFlutterBugfender extends FlutterBugfenderInterface {
       return null;
     }
   }
+
+  @override
+  Future<void> setNetworkLoggingEnabled(bool enabled) async {
+    bugfender_web.setNetworkLoggingEnabled(enabled);
+  }
+
+  @override
+  Future<void> setNetworkLoggingCaptureBodies(bool capture) async {
+    bugfender_web.setNetworkLoggingCaptureBodies(capture);
+  }
+
+  @override
+  Future<void> setNetworkLoggingCaptureErrorResponseBodies(bool capture) async {
+    bugfender_web.setNetworkLoggingCaptureErrorResponseBodies(capture);
+  }
+
+  @override
+  Future<void> setNetworkLoggingURLFilter(
+      {List<String>? allowlist, List<String>? denylist}) async {
+    bugfender_web.setNetworkLoggingURLFilter(
+      allowlist?.jsify(),
+      denylist?.jsify(),
+    );
+  }
+
+  @override
+  Future<void> setNetworkLoggingMaxRequestsPerMinute(int? count) async {
+    bugfender_web.setNetworkLoggingMaxRequestsPerMinute(count?.toJS);
+  }
+
+  @override
+  Future<void> setNetworkLoggingRequestObfuscationHandler(
+      NetworkLoggingRequestObfuscationHandler? handler) async {
+    if (handler == null) {
+      bugfender_web.setNetworkLoggingRequestObfuscationHandler(null);
+      return;
+    }
+
+    bugfender_web.setNetworkLoggingRequestObfuscationHandler(
+      ((JSString url, JSAny headers, JSString? body) {
+        final dartHeaders = _headersFromJs(headers);
+        final result = handler(
+          url.toDart,
+          dartHeaders,
+          body?.toDart,
+        );
+        return <String, Object?>{
+          'url': result.url,
+          'headers': result.headers,
+          'body': result.body,
+        }.jsify();
+      }).toJS,
+    );
+  }
+
+  @override
+  Future<void> setNetworkLoggingResponseObfuscationHandler(
+      NetworkLoggingResponseObfuscationHandler? handler) async {
+    if (handler == null) {
+      bugfender_web.setNetworkLoggingResponseObfuscationHandler(null);
+      return;
+    }
+
+    bugfender_web.setNetworkLoggingResponseObfuscationHandler(
+      ((JSAny headers, JSString? body) {
+        final dartHeaders = _headersFromJs(headers);
+        final result = handler(
+          dartHeaders,
+          body?.toDart,
+        );
+        return <String, Object?>{
+          'headers': result.headers,
+          'body': result.body,
+        }.jsify();
+      }).toJS,
+    );
+  }
+
+  Map<String, String> _headersFromJs(JSAny headers) {
+    final decoded = headers.dartify();
+    if (decoded is! Map) {
+      return <String, String>{};
+    }
+    return decoded.map(
+      (key, value) => MapEntry(key.toString(), value?.toString() ?? ''),
+    );
+  }
 }

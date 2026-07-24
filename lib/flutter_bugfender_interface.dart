@@ -134,6 +134,44 @@ abstract class FlutterBugfenderInterface {
     throw UnimplementedError('getUserFeedback() has not been implemented');
   }
 
+  Future<void> setNetworkLoggingEnabled(bool enabled) {
+    throw UnimplementedError(
+        'setNetworkLoggingEnabled() has not been implemented.');
+  }
+
+  Future<void> setNetworkLoggingCaptureBodies(bool capture) {
+    throw UnimplementedError(
+        'setNetworkLoggingCaptureBodies() has not been implemented.');
+  }
+
+  Future<void> setNetworkLoggingCaptureErrorResponseBodies(bool capture) {
+    throw UnimplementedError(
+        'setNetworkLoggingCaptureErrorResponseBodies() has not been implemented.');
+  }
+
+  Future<void> setNetworkLoggingURLFilter(
+      {List<String>? allowlist, List<String>? denylist}) {
+    throw UnimplementedError(
+        'setNetworkLoggingURLFilter() has not been implemented.');
+  }
+
+  Future<void> setNetworkLoggingMaxRequestsPerMinute(int? count) {
+    throw UnimplementedError(
+        'setNetworkLoggingMaxRequestsPerMinute() has not been implemented.');
+  }
+
+  Future<void> setNetworkLoggingRequestObfuscationHandler(
+      NetworkLoggingRequestObfuscationHandler? handler) {
+    throw UnimplementedError(
+        'setNetworkLoggingRequestObfuscationHandler() has not been implemented.');
+  }
+
+  Future<void> setNetworkLoggingResponseObfuscationHandler(
+      NetworkLoggingResponseObfuscationHandler? handler) {
+    throw UnimplementedError(
+        'setNetworkLoggingResponseObfuscationHandler() has not been implemented.');
+  }
+
   @visibleForTesting
   bool get isMock => false;
 

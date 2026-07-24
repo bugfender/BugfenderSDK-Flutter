@@ -12,11 +12,11 @@ Flutter plugin to enable Bugfender reporting.
   s.license          = { :type => 'BSD', :file => '../LICENSE' }
   s.author           = { 'Bugfender team' => 'support@bugfender.com' }
   s.source           = { :path => '.' }
-  s.source_files = 'Classes/**/*'
-  s.public_header_files = 'Classes/**/*.h'
+  s.source_files = 'flutter_bugfender/Sources/flutter_bugfender/**/*.{h,m}'
+  s.public_header_files = 'flutter_bugfender/Sources/flutter_bugfender/include/**/*.h'
   s.dependency 'Flutter'
-  s.dependency 'BugfenderSDK', '~> 2.2'
+  s.dependency 'BugfenderSDK', '~> 3.0.1'
   
-  s.ios.deployment_target = '12.0'
+  s.ios.deployment_target = '13.0'
 end
 
